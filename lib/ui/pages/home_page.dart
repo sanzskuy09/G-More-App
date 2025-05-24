@@ -1,0 +1,211 @@
+import 'package:flutter/material.dart';
+import 'package:gmore/shared/theme.dart';
+import 'package:gmore/ui/widgets/task_list.dart';
+
+class HomePage extends StatelessWidget {
+  const HomePage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: ListView(
+        padding: EdgeInsets.symmetric(
+          horizontal: 24,
+        ),
+        children: [
+          headerSection(),
+          profileSection(),
+          sisaTaskSection(),
+          taskSection(),
+          SizedBox(height: 50),
+        ],
+      ),
+    );
+  }
+
+  Widget headerSection() {
+    return Container(
+      margin: EdgeInsets.only(top: 50, bottom: 30),
+      // padding: EdgeInsets.symmetric(
+      //   vertical: 20,
+      // ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'G-MORE',
+                style: primaryTextStyle.copyWith(
+                  fontSize: 24,
+                  fontWeight: bold,
+                ),
+              ),
+              // SizedBox(
+              //   height: 2,
+              // ),
+              // Text(
+              //   'Salman AF',
+              //   style:
+              //       blackTextStyle.copyWith(fontSize: 16, fontWeight: semiBold),
+              // )
+            ],
+          ),
+          Row(children: [
+            Icon(
+              Icons.search,
+              color: primaryColor,
+              size: 30,
+            ),
+            SizedBox(width: 15),
+            Icon(
+              Icons.notifications,
+              color: primaryColor,
+              size: 30,
+            ),
+          ])
+        ],
+      ),
+    );
+  }
+
+  Widget profileSection() {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 30),
+      // height: ,
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        color: whiteColor,
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: lightBackgorundColor, width: 1),
+        // boxShadow: [
+        //   BoxShadow(
+        //     color: lightBackgorundColor,
+        //     blurRadius: 10,
+        //     offset: Offset(0, 10),
+        //   ),
+        // ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Salman AF',
+            style: primaryTextStyle.copyWith(
+              fontSize: 20,
+              fontWeight: semiBold,
+            ),
+          ),
+          const SizedBox(height: 20),
+          Row(
+            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: lightBackgorundColor,
+                ),
+                child: Icon(Icons.person, color: primaryColor, size: 40),
+              ),
+              const SizedBox(
+                width: 20,
+              ),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Finance Division',
+                      style: blackTextStyle.copyWith(
+                          fontSize: 16, fontWeight: semiBold),
+                    ),
+                    const SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      'Credit Marketing Officer Consumer',
+                      softWrap: true,
+                      overflow: TextOverflow.visible, // ✅ biar tidak dipotong
+                      style: greyTextStyle.copyWith(
+                          fontSize: 12, fontWeight: light),
+                    ),
+                    const SizedBox(
+                      height: 2,
+                    ),
+                    Text(
+                      'SURVEYOR BOGOR',
+                      style: blackTextStyle.copyWith(
+                          fontSize: 16, fontWeight: semiBold),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget sisaTaskSection() {
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      padding: EdgeInsets.symmetric(vertical: 15, horizontal: 15),
+      decoration: BoxDecoration(
+        shape: BoxShape.rectangle,
+        color: secondaryColor,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            'Sisa Task',
+            style: whiteTextStyle.copyWith(fontSize: 16, fontWeight: semiBold),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+            decoration: BoxDecoration(
+              shape: BoxShape.rectangle,
+              border: Border.all(color: whiteColor, width: 2),
+              borderRadius: BorderRadius.all(Radius.circular(5)),
+            ),
+            child: Center(
+              child: Text(
+                '12',
+                style: whiteTextStyle.copyWith(fontWeight: semiBold),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget taskSection() {
+    return Container(
+      margin: const EdgeInsets.only(top: 20),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'Recent Task',
+            style: blackTextStyle.copyWith(fontSize: 16, fontWeight: semiBold),
+          ),
+          const SizedBox(
+            height: 16,
+          ),
+          TaskListComponent(title: 'Task Gagal Diterima'),
+          TaskListComponent(title: 'Task Berhasil Diterima'),
+          TaskListComponent(title: 'Task Tidak Terkirim'),
+          TaskListComponent(title: 'Task Selesai'),
+        ],
+      ),
+    );
+  }
+}
