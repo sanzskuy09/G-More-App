@@ -5,11 +5,13 @@ class CustomFilledButton extends StatelessWidget {
   final String title;
   final double width;
   final double height;
+  final Color? color;
   final Function()? onPressed;
 
   const CustomFilledButton({
     super.key,
     required this.title,
+    this.color,
     this.width = double.infinity,
     this.height = 50,
     this.onPressed,
@@ -23,7 +25,7 @@ class CustomFilledButton extends StatelessWidget {
       child: TextButton(
         onPressed: onPressed,
         style: TextButton.styleFrom(
-          backgroundColor: primaryColor,
+          backgroundColor: color ?? primaryColor,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(10),
           ),

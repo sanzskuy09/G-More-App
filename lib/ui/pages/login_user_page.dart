@@ -35,23 +35,23 @@ class _LoginUserPageState extends State<LoginUserPage> {
     return Scaffold(
       backgroundColor: whiteColor,
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 24),
+        padding: EdgeInsets.symmetric(horizontal: 24),
         children: [
-          Container(
-            width: 180,
-            height: 180,
-            margin: EdgeInsets.only(
-              top: 150,
-              bottom: 10,
-            ),
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: AssetImage(
-                  'assets/bg_logo.png',
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
+            child: Container(
+              height: 150,
+              margin: const EdgeInsets.only(top: 150, bottom: 10),
+              decoration: const BoxDecoration(
+                image: DecorationImage(
+                  image: AssetImage('assets/bg_logo.png'),
+                  fit: BoxFit.contain, // mengecilkan agar muat
+                  alignment: Alignment.center,
                 ),
               ),
             ),
           ),
+
           // Align(
           //   alignment: Alignment.center,
           //   child: Text(

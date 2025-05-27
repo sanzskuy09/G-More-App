@@ -32,6 +32,27 @@ class KonsumenModel extends HiveObject {
   @HiveField(8)
   Uint8List? fotoKtp;
 
+  @HiveField(9)
+  String? nikPasangan;
+
+  @HiveField(10)
+  String? namaPasangan;
+
+  @HiveField(11)
+  String? tempatPasangan;
+
+  @HiveField(12)
+  String? tglLahirPasangan;
+
+  @HiveField(13)
+  String? alamatPasangan;
+
+  @HiveField(14)
+  Uint8List? fotoKtpPasangan;
+
+  @HiveField(15)
+  String? statusPernikahan;
+
   KonsumenModel({
     required this.nik,
     required this.nama,
@@ -41,6 +62,13 @@ class KonsumenModel extends HiveObject {
     required this.showRoom,
     required this.catatan,
     required this.status,
+    this.statusPernikahan,
     this.fotoKtp,
+    this.nikPasangan,
+    this.namaPasangan,
+    this.tempatPasangan,
+    this.tglLahirPasangan,
+    this.alamatPasangan,
+    this.fotoKtpPasangan,
   });
 }

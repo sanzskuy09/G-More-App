@@ -69,6 +69,7 @@ class MyApp extends StatelessWidget {
         '/ocr-ktp': (context) => const KtpOcrPage(),
         '/settings': (context) => const SettingsPage(),
         '/progress': (context) => const ProgressPage(),
+        '/daftar-konsumen': (context) => const MainPage(selectedIndex: 1),
         // detail setting pages
         '/profile': (context) => const ProfilePage(),
         '/log': (context) => const LogPage(),

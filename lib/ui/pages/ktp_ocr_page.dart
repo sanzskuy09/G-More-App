@@ -5,8 +5,6 @@ import 'package:gmore/models/konsumen_model.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:gmore/ui/widgets/buttons.dart';
 import 'package:gmore/ui/widgets/ktp_camera.dart';
-// import 'package:gmore/ui/widgets/ktp_camera_screen.dart';
-// import 'package:image_picker/image_picker.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:hive/hive.dart';
 
@@ -19,8 +17,9 @@ class KtpOcrPage extends StatefulWidget {
 
 class _KtpOcrPageState extends State<KtpOcrPage> {
   File? _image;
-  String _extractedText = '';
   bool _loading = false;
+  String _extractedText = '';
+
   final Map<String, TextEditingController> _controllers = {
     'nik': TextEditingController(),
     'nama': TextEditingController(),
@@ -32,16 +31,6 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
   };
 
   Future<void> _pickImage() async {
-    // final picker = ImagePicker();
-    // final picked = await picker.pickImage(source: ImageSource.camera);
-
-    // if (picked != null) {
-    //   setState(() {
-    //     _image = File(picked.path);
-    //     _loading = true;
-    //   });
-    //   _scanText(File(picked.path));
-    // }
     final File? img = await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => KtpCamera()),
@@ -60,11 +49,8 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
 
     final parsed = parseKtpFields(result.text);
 
-    print('INI ADALAH HASIL DARI SCAN');
-    print(result);
-
     setState(() {
-      _extractedText = result.text;
+      // _extractedText = result.text;
       _loading = false;
       _controllers['nik']!.text = parsed['nik'] ?? '';
       _controllers['nama']!.text = parsed['nama'] ?? '';
@@ -74,84 +60,47 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     });
   }
 
-  // Map<String, String> parseKtpFields(String rawText) {
-  //   final lines = rawText.split('\n');
+  // Handle Upload KTP SPOUSE
+  final Map<String, TextEditingController> _spouseControllers = {
+    'nik': TextEditingController(),
+    'nama': TextEditingController(),
+    'tempat': TextEditingController(),
+    'tgl_lahir': TextEditingController(),
+    'alamat': TextEditingController(),
+  };
 
-  //   String getLineContaining(String keyword) {
-  //     return lines.firstWhere(
-  //       (l) => l.toUpperCase().contains(keyword),
-  //       orElse: () => '',
-  //     );
-  //   }
+  String _statusPernikahan = 'Belum Menikah';
+  File? _spouseImage;
+  String _spouseExtractedText = '';
 
-  //   String? extractTanggal(String text) {
-  //     final match = RegExp(r'\d{2}-\d{2}-\d{4}').firstMatch(text);
-  //     return match?.group(0) ?? '';
-  //   }
+  Future<void> _pickSpouseImage() async {
+    final File? img = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => KtpCamera()),
+    );
+    if (img != null) {
+      _spouseImage = img;
+      await _scanSpouseText(img);
+    }
+  }
 
-  //   String tempat = '';
-  //   String tglLahir = '';
+  Future<void> _scanSpouseText(File imageFile) async {
+    final inputImage = InputImage.fromFile(imageFile);
+    final recognizer = TextRecognizer();
+    final result = await recognizer.processImage(inputImage);
+    recognizer.close();
 
-  //   final tempatTgl = getLineContaining('TEMPAT');
-  //   if (tempatTgl.isNotEmpty) {
-  //     final split = tempatTgl.split(':');
-  //     if (split.length > 1) {
-  //       final val = split[1].trim();
-  //       final parts = val.split(',');
-  //       if (parts.length == 2) {
-  //         tempat = parts[0].trim();
-  //         tglLahir = parts[1].trim();
-  //       } else {
-  //         tempat = val;
-  //       }
-  //     }
-  //   }
+    final parsed = parseKtpFields(result.text);
 
-  //   return {
-  //     'nik': getLineContaining('NIK').split(':').last.trim(),
-  //     'nama': getLineContaining('NAMA').split(':').last.trim(),
-  //     'tempat': tempat,
-  //     'tgl_lahir': tglLahir,
-  //     'alamat': getLineContaining('ALAMAT').split(':').last.trim(),
-  //   };
-  // }
-
-  // Map<String, String> parseKtpFields(String rawText) {
-  //   final lines = rawText.toUpperCase().split('\n');
-  //   String getNextLineValue(String key) {
-  //     for (int i = 0; i < lines.length; i++) {
-  //       if (lines[i].contains(key)) {
-  //         // Ambil isi di baris ini (jika ada) atau baris berikutnya
-  //         final current = lines[i].replaceAll(key, '').trim();
-  //         if (current.isNotEmpty) return current;
-  //         if (i + 1 < lines.length) return lines[i + 1].trim();
-  //       }
-  //     }
-  //     return '';
-  //   }
-
-  //   String tempat = '';
-  //   String tgl = '';
-  //   final tempatTgl = getNextLineValue('TEMPAT');
-  //   if (tempatTgl.contains(',')) {
-  //     final parts = tempatTgl.split(',');
-  //     tempat = parts[0].trim();
-  //     tgl = parts[1].trim();
-  //   } else {
-  //     tempat = tempatTgl;
-  //     final tglRaw = getNextLineValue('LAHIR');
-  //     tgl =
-  //         RegExp(r'\d{2}[-/]\d{2}[-/]\d{4}').firstMatch(tglRaw)?.group(0) ?? '';
-  //   }
-
-  //   return {
-  //     'nik': getNextLineValue('NIK'),
-  //     'nama': getNextLineValue('NAMA'),
-  //     'tempat': tempat,
-  //     'tgl_lahir': tgl,
-  //     'alamat': getNextLineValue('ALAMAT'),
-  //   };
-  // }
+    setState(() {
+      // _spouseExtractedText = result.text;
+      _spouseControllers['nik']!.text = parsed['nik'] ?? '';
+      _spouseControllers['nama']!.text = parsed['nama'] ?? '';
+      _spouseControllers['tempat']!.text = parsed['tempat'] ?? '';
+      _spouseControllers['tgl_lahir']!.text = parsed['tgl_lahir'] ?? '';
+      _spouseControllers['alamat']!.text = parsed['alamat'] ?? '';
+    });
+  }
 
   Map<String, String> parseKtpFields(String ocrText) {
     final lines = ocrText.split('\n');
@@ -238,6 +187,23 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
       showRoom: _controllers['show_room']!.text,
       catatan: _controllers['catatan']!.text,
       status: 'pending',
+      statusPernikahan: _statusPernikahan,
+      // field pasangan
+      nikPasangan: _statusPernikahan == 'Menikah'
+          ? _spouseControllers['nik']?.text
+          : null,
+      namaPasangan: _statusPernikahan == 'Menikah'
+          ? _spouseControllers['nama']?.text
+          : null,
+      tempatPasangan: _statusPernikahan == 'Menikah'
+          ? _spouseControllers['tempat']?.text
+          : null,
+      tglLahirPasangan: _statusPernikahan == 'Menikah'
+          ? _spouseControllers['tgl_lahir']?.text
+          : null,
+      alamatPasangan: _statusPernikahan == 'Menikah'
+          ? _spouseControllers['alamat']?.text
+          : null,
     );
 
     final box = Hive.box<KonsumenModel>('konsumen');
@@ -247,8 +213,11 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     _controllers.forEach((key, controller) => controller.clear());
 
     if (!context.mounted) return; // ✅ aman
-    Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
-    // Navigator.pushNamed(context, '/main');
+    Navigator.pushNamedAndRemoveUntil(
+      context,
+      '/daftar-konsumen',
+      (_) => false,
+    );
   }
 
   @override
@@ -264,16 +233,72 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         controller: _controllers[key],
+        readOnly: key == 'tgl_lahir', // hanya readonly jika tgl lahir
+        onTap: key == 'tgl_lahir'
+            ? () async {
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime.now(),
+                );
+                if (pickedDate != null) {
+                  final formattedDate =
+                      "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+                  _controllers[key]!.text = formattedDate;
+                }
+              }
+            : null,
         decoration: InputDecoration(
           labelText: label,
-          labelStyle: TextStyle(color: primaryColor),
-          border: OutlineInputBorder(),
+          labelStyle: TextStyle(color: blackColor),
+          border: const OutlineInputBorder(),
           focusedBorder: OutlineInputBorder(
             borderSide: BorderSide(
-              color: primaryColor, // warna saat focus
+              color: primaryColor,
               width: 2,
             ),
           ),
+          suffixIcon:
+              key == 'tgl_lahir' ? const Icon(Icons.calendar_today) : null,
+        ),
+      ),
+    );
+  }
+
+  Widget buildSpouseField(String label, String key) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8),
+      child: TextFormField(
+        controller: _spouseControllers[key],
+        readOnly: key == 'tgl_lahir', // hanya readonly jika tgl lahir
+        onTap: key == 'tgl_lahir'
+            ? () async {
+                DateTime? pickedDate = await showDatePicker(
+                  context: context,
+                  initialDate: DateTime.now(),
+                  firstDate: DateTime(1900),
+                  lastDate: DateTime.now(),
+                );
+                if (pickedDate != null) {
+                  final formattedDate =
+                      "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+                  _spouseControllers[key]!.text = formattedDate;
+                }
+              }
+            : null,
+        decoration: InputDecoration(
+          labelText: label,
+          labelStyle: TextStyle(color: blackColor),
+          border: const OutlineInputBorder(),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+              color: primaryColor,
+              width: 2,
+            ),
+          ),
+          suffixIcon:
+              key == 'tgl_lahir' ? const Icon(Icons.calendar_today) : null,
         ),
       ),
     );
@@ -284,9 +309,46 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     return Scaffold(
       appBar: AppBar(title: Text('Customer Form')),
       body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
+        padding: EdgeInsets.symmetric(horizontal: 16),
+        child: ListView(
+          padding: EdgeInsets.symmetric(vertical: 20),
           children: [
+            DropdownButtonFormField<String>(
+              value: _statusPernikahan,
+              decoration: InputDecoration(
+                labelText: 'Status Pernikahan',
+                border: OutlineInputBorder(),
+              ),
+              items: ['Belum Menikah', 'Menikah'].map((status) {
+                return DropdownMenuItem(
+                  value: status,
+                  child: Text(status),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _statusPernikahan = value!;
+                });
+              },
+            ),
+            const SizedBox(height: 10),
+            const Divider(),
+            const SizedBox(height: 10),
+
+            // Upload KTP PRIBADI START
+            Align(
+              alignment: Alignment.centerLeft,
+              child: Text(
+                'KTP PRIBADI',
+                style: greyTextStyle.copyWith(
+                  fontSize: 16,
+                  fontWeight: semiBold,
+                ),
+              ),
+            ),
+            const SizedBox(
+              height: 10,
+            ),
             ElevatedButton(
               onPressed: _pickImage,
               style: ElevatedButton.styleFrom(
@@ -313,33 +375,69 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
             if (_loading) CircularProgressIndicator(),
             if (_image != null) Image.file(_image!, height: 200),
             SizedBox(height: 20),
-            Expanded(
-              child: ListView(
-                children: [
-                  buildField('NIK', 'nik'),
-                  buildField('Nama', 'nama'),
-                  buildField('Tempat Lahir', 'tempat'),
-                  buildField('Tanggal Lahir', 'tgl_lahir'),
-                  buildField('Alamat', 'alamat'),
-                  buildField('Show Room', 'show_room'),
-                  buildField('Catatan', 'catatan'),
-                  const SizedBox(height: 30),
-                  CustomFilledButton(
-                    title: 'Submit',
-                    onPressed: () => _submitForm(context),
+            buildField('NIK', 'nik'),
+            buildField('Nama', 'nama'),
+            buildField('Tempat Lahir', 'tempat'),
+            buildField('Tanggal Lahir', 'tgl_lahir'),
+            buildField('Alamat', 'alamat'),
+            // Upload KTP PRIBADI END
+            // ================================
+            // Upload KTP PASANGAN (SPOUSE) START
+            if (_statusPernikahan == 'Menikah') ...[
+              const SizedBox(height: 10),
+              const Divider(),
+              const SizedBox(height: 10),
+              Align(
+                alignment: Alignment.centerLeft,
+                child: Text(
+                  'KTP PASANGAN',
+                  style: greyTextStyle.copyWith(
+                    fontSize: 16,
+                    fontWeight: semiBold,
                   ),
-                ],
+                ),
               ),
+              const SizedBox(height: 10),
+              ElevatedButton(
+                onPressed: _pickSpouseImage,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: primaryColor,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(Icons.camera_alt, color: whiteColor),
+                    SizedBox(width: 8),
+                    Text(
+                      "Upload KTP Pasangan",
+                      style: whiteTextStyle.copyWith(fontSize: 16),
+                    ),
+                  ],
+                ),
+              ),
+              if (_spouseImage != null) Image.file(_spouseImage!, height: 200),
+              const SizedBox(height: 10),
+              buildSpouseField('NIK Pasangan', 'nik'),
+              buildSpouseField('Nama Pasangan', 'nama'),
+              buildSpouseField('Tempat Lahir Pasangan', 'tempat'),
+              buildSpouseField('Tanggal Lahir Pasangan', 'tgl_lahir'),
+              buildSpouseField('Alamat Pasangan', 'alamat'),
+            ],
+            // Upload KTP PASANGAN (SPOUSE) END
+            const SizedBox(height: 10),
+            const Divider(),
+            const SizedBox(height: 10),
+
+            buildField('Show Room', 'show_room'),
+            buildField('Catatan', 'catatan'),
+            const SizedBox(height: 30),
+            CustomFilledButton(
+              title: 'Submit',
+              onPressed: () => _submitForm(context),
             ),
-            // SizedBox(height: 20),
-            // Expanded(
-            //   child: SingleChildScrollView(
-            //     child: Text(
-            //       _extractedText,
-            //       style: TextStyle(fontSize: 16),
-            //     ),
-            //   ),
-            // ),
           ],
         ),
       ),

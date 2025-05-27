@@ -6,7 +6,7 @@ class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
 
   void _resetDataHiveTEmp() async {
-    await Hive.deleteBoxFromDisk('konsumen');
+    // await Hive.deleteBoxFromDisk('konsumen');
   }
 
   @override

@@ -25,14 +25,21 @@ class KonsumenModelAdapter extends TypeAdapter<KonsumenModel> {
       showRoom: fields[5] as String,
       catatan: fields[6] as String,
       status: fields[7] as String,
+      statusPernikahan: fields[15] as String?,
       fotoKtp: fields[8] as Uint8List?,
+      nikPasangan: fields[9] as String?,
+      namaPasangan: fields[10] as String?,
+      tempatPasangan: fields[11] as String?,
+      tglLahirPasangan: fields[12] as String?,
+      alamatPasangan: fields[13] as String?,
+      fotoKtpPasangan: fields[14] as Uint8List?,
     );
   }
 
   @override
   void write(BinaryWriter writer, KonsumenModel obj) {
     writer
-      ..writeByte(9)
+      ..writeByte(16)
       ..writeByte(0)
       ..write(obj.nik)
       ..writeByte(1)
@@ -50,7 +57,21 @@ class KonsumenModelAdapter extends TypeAdapter<KonsumenModel> {
       ..writeByte(7)
       ..write(obj.status)
       ..writeByte(8)
-      ..write(obj.fotoKtp);
+      ..write(obj.fotoKtp)
+      ..writeByte(9)
+      ..write(obj.nikPasangan)
+      ..writeByte(10)
+      ..write(obj.namaPasangan)
+      ..writeByte(11)
+      ..write(obj.tempatPasangan)
+      ..writeByte(12)
+      ..write(obj.tglLahirPasangan)
+      ..writeByte(13)
+      ..write(obj.alamatPasangan)
+      ..writeByte(14)
+      ..write(obj.fotoKtpPasangan)
+      ..writeByte(15)
+      ..write(obj.statusPernikahan);
   }
 
   @override

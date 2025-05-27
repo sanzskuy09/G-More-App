@@ -42,8 +42,12 @@ class _KtpCameraState extends State<KtpCamera> {
 
       // Langsung kirim file ke OCR tanpa simpan permanen
       final image = File(file.path);
+
+      // ✅ Cek apakah widget masih mounted sebelum pakai context
+      if (!mounted) return;
       Navigator.pop(context, image); // atau langsung panggil fungsi OCR
     } catch (e) {
+      // ignore: avoid_print
       print("Error taking picture: $e");
     }
   }

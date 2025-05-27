@@ -6,19 +6,23 @@ import 'package:gmore/ui/pages/progress_page.dart';
 import 'package:gmore/ui/pages/settings_page.dart';
 
 class MainPage extends StatefulWidget {
-  const MainPage({super.key});
+  final int selectedIndex;
+
+  const MainPage({
+    super.key,
+    this.selectedIndex = 0,
+  });
 
   @override
   State<MainPage> createState() => _MainPageState();
 }
 
 class _MainPageState extends State<MainPage> {
-  int _selectedIndex = 0;
+  late int _selectedIndex = 0;
 
   final List<Widget> _pages = const [
     HomePage(),
     ProgressPage(),
-    // NewOrderPage(),
     CheckOrderPage(),
     SettingsPage()
   ];
@@ -27,6 +31,12 @@ class _MainPageState extends State<MainPage> {
     setState(() {
       _selectedIndex = index;
     });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _selectedIndex = widget.selectedIndex;
   }
 
   @override

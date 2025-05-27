@@ -39,7 +39,7 @@ class _SplashPageState extends State<SplashPage>
 
     // Navigasi ke login setelah 3 detik
     Timer(Duration(seconds: 3), () {
-      Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
+      Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
     });
   }
 
@@ -63,8 +63,8 @@ class _SplashPageState extends State<SplashPage>
               child: ScaleTransition(
                 scale: _scaleAnimation,
                 child: Container(
-                  width: 200,
-                  height: 200,
+                  width: 230,
+                  height: 230,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       image: AssetImage('assets/bg_logo.png'),
@@ -73,7 +73,7 @@ class _SplashPageState extends State<SplashPage>
                 ),
               ),
             ),
-            const SizedBox(height: 15),
+            // const SizedBox(height: 15),
             CircularProgressIndicator(color: primaryColor), // Spinner
           ],
         ),

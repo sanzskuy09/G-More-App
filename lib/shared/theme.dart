@@ -25,8 +25,10 @@ FontWeight semiBold = FontWeight.w600;
 FontWeight bold = FontWeight.w700;
 
 // Theme Baru
-Color primaryColor = const Color(0xFF5C2334);
-Color secondaryColor = const Color(0xFF2F4858);
+// Color primaryColor = const Color(0xFF5C2334);
+// Color secondaryColor = const Color(0xFF2F4858);
+Color primaryColor = const Color(0xFFB62E2E);
+Color secondaryColor = const Color(0xFF57423f);
 Color backgroundColor = const Color(0xFFF5F5F5);
 
 Color successColor = const Color(0xFF4CAF50);
