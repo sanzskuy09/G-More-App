@@ -1,23 +1,100 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:gmore/ui/widgets/task_list.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    /// Scroll ke atas saat halaman dibuka
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      _scrollController.jumpTo(0); // atau .animateTo() untuk animasi
+    });
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        padding: EdgeInsets.symmetric(
-          horizontal: 24,
+      body: SafeArea(
+        child: Column(
+          children: [
+            buildCustomAppBar(),
+            Expanded(
+              child: ListView(
+                controller: _scrollController,
+                padding: EdgeInsets.symmetric(
+                  horizontal: 24,
+                ),
+                children: [
+                  // headerSection(),
+                  profileSection(),
+                  sisaTaskSection(),
+                  taskSection(),
+                  SizedBox(height: 50),
+                ],
+              ),
+            ),
+          ],
         ),
+      ),
+    );
+  }
+
+  Widget buildCustomAppBar() {
+    return Container(
+      // color: whiteColor,
+      margin: const EdgeInsets.only(top: 20, bottom: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 28),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          headerSection(),
-          profileSection(),
-          sisaTaskSection(),
-          taskSection(),
-          SizedBox(height: 50),
+          // Kiri: Judul
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'G-MORE',
+                style: primaryTextStyle.copyWith(
+                  fontSize: 24,
+                  fontWeight: bold,
+                ),
+              ),
+            ],
+          ),
+
+          // Kanan: Icon search + notifikasi
+          Row(
+            children: [
+              Icon(
+                Icons.search,
+                color: primaryColor,
+                size: 28,
+              ),
+              const SizedBox(width: 16),
+              Icon(
+                Icons.notifications,
+                color: primaryColor,
+                size: 28,
+              ),
+            ],
+          ),
         ],
       ),
     );
@@ -110,7 +187,7 @@ class HomePage extends StatelessWidget {
                   shape: BoxShape.circle,
                   color: lightBackgorundColor,
                 ),
-                child: Icon(Icons.person, color: primaryColor, size: 40),
+                child: Icon(Icons.person, color: blackColor, size: 40),
               ),
               const SizedBox(
                 width: 20,
@@ -120,7 +197,7 @@ class HomePage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Finance Division',
+                      'CONSUMER FINANCE',
                       style: blackTextStyle.copyWith(
                           fontSize: 16, fontWeight: semiBold),
                     ),
@@ -128,7 +205,7 @@ class HomePage extends StatelessWidget {
                       height: 2,
                     ),
                     Text(
-                      'Credit Marketing Officer Consumer',
+                      'Credit Marketing Officer',
                       softWrap: true,
                       overflow: TextOverflow.visible, // ✅ biar tidak dipotong
                       style: greyTextStyle.copyWith(
@@ -138,7 +215,7 @@ class HomePage extends StatelessWidget {
                       height: 2,
                     ),
                     Text(
-                      'SURVEYOR BOGOR',
+                      'BOGOR',
                       style: blackTextStyle.copyWith(
                           fontSize: 16, fontWeight: semiBold),
                     ),

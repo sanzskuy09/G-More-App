@@ -40,11 +40,12 @@ class _LoginUserPageState extends State<LoginUserPage> {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
             child: Container(
-              height: 150,
-              margin: const EdgeInsets.only(top: 150, bottom: 10),
+              height: 200,
+              margin: const EdgeInsets.only(top: 150, bottom: 20),
               decoration: const BoxDecoration(
                 image: DecorationImage(
-                  image: AssetImage('assets/bg_logo.png'),
+                  // image: AssetImage('assets/bg_logo.png'),
+                  image: AssetImage('assets/ic_logo.png'),
                   fit: BoxFit.contain, // mengecilkan agar muat
                   alignment: Alignment.center,
                 ),

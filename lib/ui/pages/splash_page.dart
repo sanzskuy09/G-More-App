@@ -67,7 +67,7 @@ class _SplashPageState extends State<SplashPage>
                   height: 230,
                   decoration: const BoxDecoration(
                     image: DecorationImage(
-                      image: AssetImage('assets/bg_logo.png'),
+                      image: AssetImage('assets/ic_logo.png'),
                     ),
                   ),
                 ),

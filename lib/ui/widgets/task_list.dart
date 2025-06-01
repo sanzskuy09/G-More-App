@@ -31,7 +31,7 @@ class TaskListComponent extends StatelessWidget {
                   style: TextStyle(
                     color: secondaryColor,
                     fontSize: 16,
-                    fontWeight: semiBold,
+                    fontWeight: bold,
                   )),
               Text(
                 '4 jam yang lalu',
