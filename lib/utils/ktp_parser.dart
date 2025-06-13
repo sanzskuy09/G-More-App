@@ -26,8 +26,11 @@ Map<String, String> parseKtpFields(String ocrText) {
 }
 
 String detectNik(List<String> lines) {
+  final exclusionKeywords = ['Tempat', 'tampat', 'Tgl', 'Lahir'];
+
   for (final line in lines) {
-    if (RegExp(r'\b[\dA-Z]{12,18}\b', caseSensitive: false).hasMatch(line)) {
+    if (RegExp(r'\b[\dA-Z]{12,18}\b', caseSensitive: false).hasMatch(line) &&
+        !exclusionKeywords.any((k) => line.contains(k))) {
       return line;
     }
     // final match = ;
@@ -41,6 +44,7 @@ String detectNama(List<String> lines) {
     'NIK',
     'KOTA',
     'PROVINSI',
+    'PRG',
     'VINSI',
     'KABUP',
     'PATEN',
@@ -79,18 +83,19 @@ Map<String, String> detectTempatDanTglLahir(List<String> lines) {
 
     // Bersihkan label seperti 'Tempat/Tgl Lahir:', 'TempatHg Lahir'
     line = line.replaceAll(
-        RegExp(r'tempat.*?lahir[:\s]*', caseSensitive: false), '');
+      RegExp(r'tempat.*?lahir[:\s]*', caseSensitive: false),
+      '',
+    );
 
-    // Kasus 1: Format dengan koma, seperti "Jakarta, 09-03-2000" atau "Jakarta, 09-03 2000"
+    // Kasus 1: Format dengan koma → "Jakarta, 09-03-2000" atau "Jakarta, 09 03 2000"
     if (line.contains(',')) {
       final parts = line.split(',');
       if (parts.length == 2) {
         String tempat = parts[0].trim();
         String rawTgl = parts[1].trim();
 
-        // Normalisasi jika formatnya 09-03 2000 → 09-03-2000
-        rawTgl =
-            rawTgl.replaceAll(RegExp(r'(\d{2}-\d{2})\s+(\d{4})'), r'\1-\2');
+        // Normalisasi spasi ke format - (contoh: 09 03 2000 → 09-03-2000)
+        rawTgl = rawTgl.replaceAll(RegExp(r'\s+'), '-');
 
         return {
           'tempat': tempat,
@@ -99,16 +104,15 @@ Map<String, String> detectTempatDanTglLahir(List<String> lines) {
       }
     }
 
-    // Kasus 2: Format tanpa koma
-    final match =
-        RegExp(r'([A-Z\s]+)(\d{2}-\d{2}-\d{4}|\d{2}-\d{6}|\d{2}-\d{2}\s\d{4})')
-            .firstMatch(line);
+    // Kasus 2: Format tanpa koma, misalnya: "JAKARTA09032000" atau "JAKARTA 09 03 2000"
+    final match = RegExp(
+      r'([A-Z\s]+?)\s*(\d{2})[-\s](\d{2})[-\s](\d{4})',
+      caseSensitive: false,
+    ).firstMatch(line);
+
     if (match != null) {
       String tempat = match.group(1)?.trim() ?? '';
-      String rawTgl = match.group(2)?.trim() ?? '';
-
-      // Normalisasi jika 09-03 2000 → 09-03-2000
-      rawTgl = rawTgl.replaceAll(RegExp(r'(\d{2}-\d{2})\s+(\d{4})'), r'\1-\2');
+      String rawTgl = "${match.group(2)}-${match.group(3)}-${match.group(4)}";
 
       return {
         'tempat': tempat,
@@ -139,10 +143,32 @@ Map<String, String> detectAlamat(List<String> lines) {
     }
 
     // RT/RW format 001/002
+    String _normalizeRtRw(String input) {
+      return input.toUpperCase().replaceAllMapped(RegExp(r'[A-Z]'), (match) {
+        final char = match.group(0)!;
+        switch (char) {
+          case 'O':
+            return '0';
+          case 'I':
+          case 'L':
+            return '1';
+          case 'Z':
+            return '2';
+          case 'S':
+            return '5';
+          case 'B':
+            return '8';
+          default:
+            return char;
+        }
+      }).replaceAll(RegExp(r'[^0-9/]'), ''); // hapus selain digit dan "/"
+    }
+
     final rtRwRegex = RegExp(r'\b(\d{1,3})/(\d{1,3})\b');
 
     if ((rt.isEmpty || rw.isEmpty) && rtRwRegex.hasMatch(line)) {
-      final match = rtRwRegex.firstMatch(line);
+      final normalizedLine = _normalizeRtRw(line);
+      final match = rtRwRegex.firstMatch(normalizedLine);
       if (match != null) {
         rt = match.group(1)!.padLeft(3, '0');
         rw = match.group(2)!.padLeft(3, '0');

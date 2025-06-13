@@ -43,6 +43,10 @@ dependencies:
   path_provider: ^2.1.2
   dropdown_button2: ^2.3.9
   diacritic: ^0.1.6
+  image_cropper: ^9.1.0
+  http: ^1.4.0
+  flutter_bloc: ^9.1.1
+  equatable: ^2.0.7
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.

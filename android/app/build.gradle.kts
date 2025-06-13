@@ -6,7 +6,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.my_app"
+    namespace = "com.example.gmore_app"
     compileSdk = 35
     ndkVersion = "27.2.12479018"
     // compileSdk = flutter.compileSdkVersion
@@ -23,7 +23,7 @@ android {
 
     defaultConfig {
         // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.my_app"
+        applicationId = "com.example.gmore_app"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
         minSdk = 21

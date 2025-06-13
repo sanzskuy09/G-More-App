@@ -59,6 +59,9 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     print('==========================');
     print(result.text);
 
+    final alamat = parsed['alamat'] ?? '';
+    final rtRw = parsed['rt_rw'] ?? '';
+
     setState(() {
       // _extractedText = result.text;
       _loading = false;
@@ -67,7 +70,7 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
       _controllers['tempat']!.text = parsed['tempat_lahir'] ?? '';
       _controllers['tgl_lahir']!.text = parsed['tgl_lahir'] ?? '';
       _controllers['alamat']!.text =
-          '${parsed['alamat']} RT/RW ${parsed['rt_rw']}' ?? '';
+          rtRw.isNotEmpty ? '$alamat RT/RW $rtRw' : alamat;
     });
   }
 
