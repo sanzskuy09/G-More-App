@@ -46,7 +46,6 @@ class _LoginUserPageState extends State<LoginUserPage> {
       backgroundColor: whiteColor,
       body: BlocConsumer<AuthBloc, AuthState>(
         listener: (context, state) {
-          print(state);
           if (state is AuthFailed) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(

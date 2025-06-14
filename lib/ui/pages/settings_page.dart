@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:hive/hive.dart';
 
@@ -7,6 +8,39 @@ class SettingsPage extends StatelessWidget {
 
   void _resetDataHiveTEmp() async {
     // await Hive.deleteBoxFromDisk('konsumen');
+  }
+
+  Future<void> clearAllStorage() async {
+    const storage = FlutterSecureStorage();
+    await storage.deleteAll();
+
+    final data = await storage.readAll();
+    print('Storage setelah logout: $data');
+  }
+
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("Konfirmasi"),
+        content: const Text("Yakin ingin logout?"),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(context),
+            child: const Text("Batal"),
+          ),
+          TextButton(
+            onPressed: () async {
+              Navigator.pop(context); // Tutup dialog
+              await clearAllStorage(); // Hapus token
+              Navigator.pushNamedAndRemoveUntil(
+                  context, '/login', (_) => false);
+            },
+            child: const Text("Logout"),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -130,12 +164,8 @@ class SettingsPage extends StatelessWidget {
                     ),
                     contentPadding: EdgeInsets.symmetric(vertical: 2),
                     onTap: () {
-                      Navigator.pushNamedAndRemoveUntil(
-                        context,
-                        '/login',
-                        (_) => false,
-                      );
-                    }, // Action here
+                      _showLogoutDialog(context);
+                    },
                   ),
                   Divider(height: 1, color: lightBackgorundColor),
                 ],

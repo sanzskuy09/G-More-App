@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:gmore/ui/widgets/task_list.dart';
 
@@ -16,11 +17,18 @@ class _HomePageState extends State<HomePage> {
   @override
   void initState() {
     super.initState();
+    checkStorage();
 
     /// Scroll ke atas saat halaman dibuka
     WidgetsBinding.instance.addPostFrameCallback((_) {
       _scrollController.jumpTo(0); // atau .animateTo() untuk animasi
     });
+  }
+
+  void checkStorage() async {
+    const storage = FlutterSecureStorage();
+    String? token = await storage.read(key: 'token');
+    print('Stored token: $token');
   }
 
   @override
