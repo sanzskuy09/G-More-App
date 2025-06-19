@@ -16,22 +16,22 @@ class _LoginUserPageState extends State<LoginUserPage> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
-  // void login() {
-  //   String username = _usernameController.text;
-  //   String password = _passwordController.text;
+  void login() {
+    String username = _usernameController.text;
+    String password = _passwordController.text;
 
-  //   if (validate()) {
-  //     Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
-  //   } else {
-  //     ScaffoldMessenger.of(context).showSnackBar(
-  //       SnackBar(
-  //         content: Text('Invalid Username or Password'),
-  //         duration: Duration(seconds: 2),
-  //         backgroundColor: Colors.red,
-  //       ),
-  //     );
-  //   }
-  // }
+    if (validate()) {
+      Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Invalid Username or Password'),
+          duration: Duration(seconds: 2),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
+  }
 
   bool validate() {
     if (_usernameController.text.isEmpty || _passwordController.text.isEmpty) {
@@ -74,8 +74,9 @@ class _LoginUserPageState extends State<LoginUserPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 0),
                 child: Container(
-                  height: 200,
-                  margin: const EdgeInsets.only(top: 150, bottom: 20),
+                  height: 350,
+                  // margin: const EdgeInsets.only(top: 150, bottom: 20),
+                  margin: const EdgeInsets.only(top: 100, bottom: 0),
                   decoration: const BoxDecoration(
                     image: DecorationImage(
                       // image: AssetImage('assets/bg_logo.png'),
@@ -161,14 +162,15 @@ class _LoginUserPageState extends State<LoginUserPage> {
                       title: 'Sign in',
                       onPressed: () {
                         if (validate()) {
-                          context.read<AuthBloc>().add(
-                                AuthLogin(
-                                  LoginModel(
-                                    username: _usernameController.text,
-                                    password: _passwordController.text,
-                                  ),
-                                ),
-                              );
+                          login();
+                          // context.read<AuthBloc>().add(
+                          //       AuthLogin(
+                          //         LoginModel(
+                          //           username: _usernameController.text,
+                          //           password: _passwordController.text,
+                          //         ),
+                          //       ),
+                          //     );
                         } else {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(

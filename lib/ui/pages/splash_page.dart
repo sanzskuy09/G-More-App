@@ -115,7 +115,8 @@ class _SplashPageState extends State<SplashPage>
       context.read<AuthBloc>().add(AuthCheck(token));
     } else {
       Timer(const Duration(seconds: 3), () {
-        Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
+        // Navigator.pushNamedAndRemoveUntil(context, '/login', (_) => false);
+        Navigator.pushNamedAndRemoveUntil(context, '/main', (_) => false);
       });
     }
   }

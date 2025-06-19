@@ -28,7 +28,7 @@ class _HomePageState extends State<HomePage> {
   void checkStorage() async {
     const storage = FlutterSecureStorage();
     String? token = await storage.read(key: 'token');
-    print('Stored token: $token');
+    // print('Stored token: $token');
   }
 
   @override

@@ -1,11 +1,15 @@
 import 'dart:io';
 
+import 'package:accordion/accordion.dart';
+import 'package:accordion/controllers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:gmore/models/konsumen_model.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:gmore/ui/widgets/buttons.dart';
 import 'package:gmore/ui/widgets/ktp2_camera.dart';
 import 'package:gmore/ui/widgets/ktp_camera.dart';
+import 'package:gmore/ui/widgets/upload_foto.dart';
 import 'package:gmore/utils/ktp_parser.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';
 import 'package:hive/hive.dart';
@@ -29,7 +33,13 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     'tempat': TextEditingController(),
     'tgl_lahir': TextEditingController(),
     'alamat': TextEditingController(),
-    'show_room': TextEditingController(),
+    'rt': TextEditingController(),
+    'rw': TextEditingController(),
+    'kel': TextEditingController(),
+    'kec': TextEditingController(),
+    'kota': TextEditingController(),
+    'provinsi': TextEditingController(),
+    'dealer': TextEditingController(),
     'catatan': TextEditingController(),
   };
 
@@ -37,14 +47,15 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     final File? img = await Navigator.push(
       context,
       // MaterialPageRoute(builder: (_) => KtpCamera()),
-      MaterialPageRoute(builder: (_) => Ktp2Camera()),
+      // MaterialPageRoute(builder: (_) => Ktp2Camera()),
+      MaterialPageRoute(builder: (_) => UploadFoto()),
     );
     if (img != null) {
       setState(() {
         _image = img;
       });
       // _image = img;
-      await _scanText(img); // lanjut proses OCR
+      // await _scanText(img); // lanjut proses OCR
     }
   }
 
@@ -55,9 +66,9 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     recognizer.close();
 
     final parsed = parseKtpFields(result.text);
-    print(parsed);
-    print('==========================');
-    print(result.text);
+    // print(parsed);
+    // print('==========================');
+    // print(result.text);
 
     final alamat = parsed['alamat'] ?? '';
     final rtRw = parsed['rt_rw'] ?? '';
@@ -81,9 +92,17 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     'tempat': TextEditingController(),
     'tgl_lahir': TextEditingController(),
     'alamat': TextEditingController(),
+    'rt': TextEditingController(),
+    'rw': TextEditingController(),
+    'kel': TextEditingController(),
+    'kec': TextEditingController(),
+    'kota': TextEditingController(),
+    'provinsi': TextEditingController(),
   };
 
-  String _statusPernikahan = 'Belum Menikah';
+  String _statusPernikahan = 'Belum Kawin';
+  String? _namaCabang;
+  List<String> listCabang = ['Depok', 'Jakarta'];
   File? _spouseImage;
   String _spouseExtractedText = '';
 
@@ -120,81 +139,6 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     });
   }
 
-  // Map<String, String> parseKtpFields(String ocrText) {
-  //   final lines = ocrText.split('\n');
-
-  //   String nik = '';
-  //   String nama = '';
-  //   String tempatLahir = '';
-  //   String tglLahir = '';
-  //   String alamat = '';
-
-  //   for (int i = 0; i < lines.length; i++) {
-  //     final line = lines[i].trim();
-
-  //     // Deteksi NIK (16 digit)
-  //     if (nik.isEmpty &&
-  //         RegExp(r'\b[\dA-Z]{12,18}\b', caseSensitive: false).hasMatch(line)) {
-  //       nik = line;
-  //     }
-
-  //     // Deteksi Nama (huruf kapital, tanpa angka, mungkin ada ":" di awal)
-  //     else if (nama.isEmpty) {
-  //       // Hilangkan karakter ":" dan trim
-  //       final normalized = line.replaceAll(':', '').trim();
-
-  //       // Cek jika hanya huruf besar dan spasi, tanpa angka
-  //       if (RegExp(r'^[A-Z\s]+$').hasMatch(normalized) &&
-  //           !normalized.contains(RegExp(r'\d')) &&
-  //           !normalized.contains('NIK') &&
-  //           !normalized.contains('KOTA') &&
-  //           (!normalized.contains('PRO') || !normalized.contains('VINSI'))) {
-  //         nama = normalized;
-  //       }
-  //     }
-
-  //     // Deteksi Tempat/Tgl Lahir (dengan koma dan format tanggal)
-  //     else if (tempatLahir.isEmpty &&
-  //         (line.contains(',') || line.contains(RegExp(r'\d{2}-\d{2}-\d{4}')))) {
-  //       // Kasus 1: Format "JAKARTA, 09-03-2000"
-  //       if (line.contains(',')) {
-  //         final parts = line.split(',');
-  //         if (parts.length == 2) {
-  //           tempatLahir = parts[0].trim();
-  //           tglLahir = parts[1].trim();
-  //         }
-  //       }
-
-  //       // Kasus 2: Format "JAKARTA 09-03-2000" atau "JAKARTA 09-032000"
-  //       else {
-  //         final match =
-  //             RegExp(r'(.*?)(\d{2}-\d{2}-\d{4}|\d{2}-\d{6})').firstMatch(line);
-  //         if (match != null) {
-  //           tempatLahir = match.group(1)?.trim() ?? '';
-  //           tglLahir = match.group(2)?.trim() ?? '';
-  //         }
-  //       }
-  //     }
-
-  //     // Deteksi Alamat
-  //     else if (alamat.isEmpty &&
-  //         (line.toLowerCase().contains('jl') ||
-  //             line.toLowerCase().contains('jalan') ||
-  //             line.toLowerCase().contains('gg') ||
-  //             line.toLowerCase().contains('kp'))) {
-  //       alamat = line;
-  //     }
-  //   }
-
-  //   return {
-  //     'nik': nik,
-  //     'nama': nama,
-  //     'tempat_lahir': tempatLahir,
-  //     'tgl_lahir': tglLahir,
-  //     'alamat': alamat,
-  //   };
-  // }
-
   void _submitForm(BuildContext context) async {
     final konsumen = KonsumenModel(
       nik: _controllers['nik']!.text,
@@ -202,10 +146,11 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
       tempat: _controllers['tempat']!.text,
       tglLahir: _controllers['tgl_lahir']!.text,
       alamat: _controllers['alamat']!.text,
-      showRoom: _controllers['show_room']!.text,
+      showRoom: _controllers['dealer']!.text,
       catatan: _controllers['catatan']!.text,
       status: 'pending',
       statusPernikahan: _statusPernikahan,
+      // namaCabang: _namaCabang,
       // field pasangan
       nikPasangan: _statusPernikahan == 'Menikah'
           ? _spouseControllers['nik']?.text
@@ -250,6 +195,14 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
+        textCapitalization: TextCapitalization.characters,
+        keyboardType: key == 'nik' ? TextInputType.number : TextInputType.text,
+        inputFormatters: key == 'nik'
+            ? [
+                LengthLimitingTextInputFormatter(16),
+                FilteringTextInputFormatter(RegExp('[0-9]'), allow: true)
+              ]
+            : null,
         controller: _controllers[key],
         readOnly: key == 'tgl_lahir', // hanya readonly jika tgl lahir
         onTap: key == 'tgl_lahir'
@@ -280,6 +233,19 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
           suffixIcon:
               key == 'tgl_lahir' ? const Icon(Icons.calendar_today) : null,
         ),
+        validator: key == 'nik'
+            ? (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Nik Wajib Di isi';
+                }
+
+                if (value.length != 16) {
+                  return 'Nik Tidak Valid';
+                }
+
+                return null;
+              }
+            : null,
       ),
     );
   }
@@ -325,95 +291,18 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Customer Form')),
+      appBar: AppBar(title: Text('FORM ORDER')),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 16),
         child: ListView(
           padding: EdgeInsets.symmetric(vertical: 20),
           children: [
-            // DropdownButtonFormField<String>(
-            //   value: _statusPernikahan,
-            //   decoration: InputDecoration(
-            //     labelText: 'Status Pernikahan',
-            //     border: const OutlineInputBorder(),
-            //     focusedBorder: OutlineInputBorder(
-            //       borderSide: BorderSide(
-            //         color: primaryColor,
-            //         width: 2,
-            //       ),
-            //     ),
-            //   ),
-            //   items: ['Belum Menikah', 'Menikah'].map((status) {
-            //     return DropdownMenuItem(
-            //       value: status,
-            //       child: Text(status),
-            //     );
-            //   }).toList(),
-            //   onChanged: (value) {
-            //     setState(() {
-            //       _statusPernikahan = value!;
-            //     });
-            //   },
-            // ),
-            // DropdownButtonFormField<String>(
-            //   value: _statusPernikahan,
-            //   decoration: InputDecoration(
-            //     labelText: 'Status Pernikahan',
-            //     prefixIcon: const Icon(Icons.favorite, color: Colors.redAccent),
-            //     filled: true,
-            //     fillColor: Colors.grey.shade100,
-            //     labelStyle: TextStyle(
-            //       color: primaryColor,
-            //       fontWeight: FontWeight.w600,
-            //     ),
-            //     border: OutlineInputBorder(
-            //       borderRadius: BorderRadius.circular(5),
-            //     ),
-            //     focusedBorder: OutlineInputBorder(
-            //       borderRadius: BorderRadius.circular(5),
-            //       borderSide: BorderSide(
-            //         color: primaryColor,
-            //         width: 2,
-            //       ),
-            //     ),
-            //   ),
-            //   dropdownColor: Colors.white,
-            //   borderRadius: BorderRadius.circular(12),
-            //   icon: const Icon(Icons.arrow_drop_down, color: Colors.black54),
-            //   style: const TextStyle(
-            //     color: Colors.black87,
-            //     fontSize: 16,
-            //   ),
-            //   items: ['Belum Menikah', 'Menikah'].map((status) {
-            //     return DropdownMenuItem(
-            //       value: status,
-            //       child: Row(
-            //         children: [
-            //           Icon(
-            //             status == 'Menikah'
-            //                 ? Icons.check_circle
-            //                 : Icons.person_outline,
-            //             color: status == 'Menikah' ? Colors.green : Colors.grey,
-            //           ),
-            //           const SizedBox(width: 10),
-            //           Text(status),
-            //         ],
-            //       ),
-            //     );
-            //   }).toList(),
-            //   onChanged: (value) {
-            //     setState(() {
-            //       _statusPernikahan = value!;
-            //     });
-            //   },
-            // ),
-
             DropdownButtonFormField2<String>(
-              value: _statusPernikahan,
+              value: _namaCabang,
               isExpanded: true,
               decoration: InputDecoration(
                 // contentPadding: const EdgeInsets.symmetric(horizontal: 5),
-                labelText: 'Status Pernikahan',
+                labelText: 'Nama Cabang',
                 // prefixIcon: const Icon(Icons.favorite, color: Colors.redAccent),
                 filled: true,
                 fillColor: Colors.grey.shade100,
@@ -442,16 +331,70 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
               menuItemStyleData: const MenuItemStyleData(
                 padding: EdgeInsets.only(left: 14, right: 14),
               ),
-              items: ['Belum Menikah', 'Menikah'].map((status) {
+              items: ['-- Pilih Cabang --', 'Depok', 'Jakarta'].map((status) {
+                return DropdownMenuItem(
+                  value: status == '-- Pilih Cabang --' ? null : status,
+                  child: Row(
+                    children: [
+                      Text(status),
+                    ],
+                  ),
+                );
+              }).toList(),
+              onChanged: (value) {
+                setState(() {
+                  _namaCabang = value!;
+                });
+              },
+            ),
+
+            const SizedBox(height: 10),
+            const Divider(),
+            const SizedBox(height: 10),
+
+            DropdownButtonFormField2<String>(
+              value: _statusPernikahan,
+              isExpanded: true,
+              decoration: InputDecoration(
+                // contentPadding: const EdgeInsets.symmetric(horizontal: 5),
+                labelText: 'Status Perkawinan',
+                // prefixIcon: const Icon(Icons.favorite, color: Colors.redAccent),
+                filled: true,
+                fillColor: Colors.grey.shade100,
+                labelStyle: TextStyle(
+                  color: primaryColor,
+                  fontWeight: FontWeight.w600,
+                ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(5),
+                  borderSide: BorderSide(
+                    color: primaryColor,
+                    width: 2,
+                  ),
+                ),
+              ),
+              dropdownStyleData: DropdownStyleData(
+                padding: EdgeInsets.zero, // padding dalam dropdown
+                offset: Offset(0, 0), // posisi dropdown tepat di bawah
+              ),
+              buttonStyleData: ButtonStyleData(
+                padding: const EdgeInsets.only(right: 8, left: 0),
+              ),
+              menuItemStyleData: const MenuItemStyleData(
+                padding: EdgeInsets.only(left: 14, right: 14),
+              ),
+              items: ['Belum Kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati']
+                  .map((status) {
                 return DropdownMenuItem(
                   value: status,
                   child: Row(
                     children: [
                       Icon(
-                        status == 'Menikah'
-                            ? Icons.check_circle
-                            : Icons.person_outline,
-                        color: status == 'Menikah' ? Colors.green : Colors.grey,
+                        status == 'Kawin' ? Icons.group : Icons.person_outline,
+                        color: status == 'Kawin' ? Colors.green : Colors.grey,
                       ),
                       const SizedBox(width: 10),
                       Text(status),
@@ -474,7 +417,7 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
             Align(
               alignment: Alignment.centerLeft,
               child: Text(
-                'KTP PRIBADI',
+                'KTP PEMOHON',
                 style: greyTextStyle.copyWith(
                   fontSize: 16,
                   fontWeight: semiBold,
@@ -501,26 +444,156 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
                   ),
                   SizedBox(width: 8),
                   Text(
-                    "Upload KTP",
+                    "Unggah Foto KTP",
                     style: whiteTextStyle.copyWith(fontSize: 16),
                   ),
                 ],
               ),
             ),
             if (_loading) CircularProgressIndicator(),
+            const SizedBox(height: 10),
             if (_image != null) Image.file(_image!),
-
             SizedBox(height: 10),
-            buildField('NIK', 'nik'),
             buildField('Nama', 'nama'),
+            buildField('NIK', 'nik'),
             buildField('Tempat Lahir', 'tempat'),
             buildField('Tanggal Lahir', 'tgl_lahir'),
-            buildField('Alamat', 'alamat'),
+            Container(
+              margin: const EdgeInsets.only(top: 10, bottom: 10),
+              decoration: BoxDecoration(
+                border: Border.all(
+                    color: primaryColor, width: 2), // 🟥 Border merah
+                borderRadius: BorderRadius.circular(5),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // 🔺 Header Merah
+                  Container(
+                    decoration: BoxDecoration(
+                      color: primaryColor,
+                      // borderRadius: BorderRadius.vertical(
+                      //   top: Radius.circular(5),
+                      // ),
+                    ),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 12),
+                    child: Row(
+                      children: [
+                        Icon(Icons.maps_home_work, color: whiteColor),
+                        SizedBox(width: 12),
+                        Text(
+                          'Alamat KTP',
+                          style: whiteTextStyle.copyWith(
+                              fontSize: 16, fontWeight: semiBold),
+                        ),
+                      ],
+                    ),
+                  ),
+                  // ⬜ Konten Form Putih
+                  Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 10,
+                      vertical: 10,
+                    ),
+                    child: Column(
+                      children: [
+                        buildField('Alamat', 'alamat'),
+                        Row(
+                          children: [
+                            Expanded(
+                              child: buildField('RT', 'rt'),
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              '/',
+                              style: blackTextStyle.copyWith(fontSize: 16),
+                            ),
+                            const SizedBox(width: 10),
+                            Expanded(
+                              child: buildField('RW', 'rw'),
+                            )
+                          ],
+                        ),
+                        buildField('Kelurahan/Desa', 'kel'),
+                        buildField('Kecataman', 'kec'),
+                        buildField('Kota', 'kota'),
+                        buildField('Provinsi', 'provinsi'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            // Accordion(
+            //     openAndCloseAnimation: true,
+            //     headerBackgroundColor: secondaryColor,
+            //     headerBorderColor: secondaryColor,
+            //     headerBorderColorOpened: Colors.transparent,
+            //     // headerBorderWidth: 1,
+            //     headerBackgroundColorOpened: primaryColor,
+            //     contentBackgroundColor: Colors.white,
+            //     contentBorderColor: primaryColor,
+            //     contentBorderWidth: 2,
+            //     contentHorizontalPadding: 0,
+            //     scaleWhenAnimating: true,
+            //     paddingListHorizontal: 0,
+            //     paddingListTop: 10,
+            //     paddingListBottom: 0,
+            //     headerBorderRadius: 5,
+            //     headerPadding:
+            //         const EdgeInsets.symmetric(vertical: 13, horizontal: 15),
+            //     sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
+            //     sectionClosingHapticFeedback: SectionHapticFeedback.light,
+            //     children: [
+            //       AccordionSection(
+            //           isOpen: true,
+            //           headerBorderRadius: 5,
+            //           contentBorderRadius: 5,
+            //           contentVerticalPadding: 10,
+            //           contentHorizontalPadding: 10,
+            //           leftIcon: const Icon(Icons.question_answer_outlined,
+            //               color: Colors.white),
+            //           header: Text(
+            //             'Alamat KTP',
+            //             style: whiteTextStyle.copyWith(
+            //                 fontSize: 16, fontWeight: semiBold),
+            //           ),
+            //           content: Column(
+            //             children: [
+            //               buildField('Alamat', 'alamat'),
+            //               Row(
+            //                 children: [
+            //                   Expanded(
+            //                     child: buildField('RT', 'rt'),
+            //                   ),
+            //                   const SizedBox(
+            //                     width: 10,
+            //                   ),
+            //                   Text(
+            //                     '/',
+            //                     style: blackTextStyle.copyWith(fontSize: 16),
+            //                   ),
+            //                   const SizedBox(
+            //                     width: 10,
+            //                   ),
+            //                   Expanded(
+            //                     child: buildField('RW', 'rw'),
+            //                   )
+            //                 ],
+            //               ),
+            //               buildField('Kelurahan/Desa', 'kel'),
+            //               buildField('Kecataman', 'kec'),
+            //               buildField('Kota', 'kota'),
+            //               buildField('Provinsi', 'provinsi'),
+            //             ],
+            //           )),
+            //     ]),
             // Upload KTP PRIBADI END
             // ================================
             // Upload KTP PASANGAN (SPOUSE) START
-            if (_statusPernikahan == 'Menikah') ...[
-              const SizedBox(height: 10),
+            if (_statusPernikahan == 'Kawin') ...[
               const Divider(),
               const SizedBox(height: 10),
               Align(
@@ -548,26 +621,89 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
                     Icon(Icons.camera_alt, color: whiteColor),
                     SizedBox(width: 8),
                     Text(
-                      "Upload KTP Pasangan",
+                      "Unggah Foto KTP Pasangan",
                       style: whiteTextStyle.copyWith(fontSize: 16),
                     ),
                   ],
                 ),
               ),
+              const SizedBox(height: 10),
               if (_spouseImage != null) Image.file(_spouseImage!, height: 200),
               const SizedBox(height: 10),
-              buildSpouseField('NIK Pasangan', 'nik'),
-              buildSpouseField('Nama Pasangan', 'nama'),
-              buildSpouseField('Tempat Lahir Pasangan', 'tempat'),
-              buildSpouseField('Tanggal Lahir Pasangan', 'tgl_lahir'),
-              buildSpouseField('Alamat Pasangan', 'alamat'),
+              buildSpouseField('Nama', 'nama'),
+              buildSpouseField('NIK', 'nik'),
+              buildSpouseField('Tempat Lahir', 'tempat'),
+              buildSpouseField('Tanggal Lahir', 'tgl_lahir'),
+              // buildSpouseField('Alamat Pasangan', 'alamat'),
+              Container(
+                margin: const EdgeInsets.only(top: 10, bottom: 10),
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: primaryColor, width: 2), // 🟥 Border merah
+                  borderRadius: BorderRadius.circular(5),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // 🔺 Header Merah
+                    Container(
+                      decoration: BoxDecoration(color: primaryColor),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 12),
+                      child: Row(
+                        children: [
+                          Icon(Icons.maps_home_work, color: whiteColor),
+                          SizedBox(width: 12),
+                          Text(
+                            'Alamat KTP Pasangan',
+                            style: whiteTextStyle.copyWith(
+                                fontSize: 16, fontWeight: semiBold),
+                          ),
+                        ],
+                      ),
+                    ),
+                    // ⬜ Konten Form Putih
+                    Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 10,
+                      ),
+                      child: Column(
+                        children: [
+                          buildSpouseField('Alamat', 'alamat'),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: buildSpouseField('RT', 'rt'),
+                              ),
+                              const SizedBox(width: 10),
+                              Text(
+                                '/',
+                                style: blackTextStyle.copyWith(fontSize: 16),
+                              ),
+                              const SizedBox(width: 10),
+                              Expanded(
+                                child: buildSpouseField('RW', 'rw'),
+                              )
+                            ],
+                          ),
+                          buildSpouseField('Kelurahan/Desa', 'kel'),
+                          buildSpouseField('Kecataman', 'kec'),
+                          buildSpouseField('Kota', 'kota'),
+                          buildSpouseField('Provinsi', 'provinsi'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ],
             // Upload KTP PASANGAN (SPOUSE) END
-            const SizedBox(height: 10),
             const Divider(),
             const SizedBox(height: 10),
 
-            buildField('Show Room', 'show_room'),
+            buildField('Nama Dealer', 'dealer'),
             buildField('Catatan', 'catatan'),
             const SizedBox(height: 30),
             CustomFilledButton(

@@ -140,11 +140,6 @@ class _Ktp2CameraState extends State<Ktp2Camera> {
     final cropWidth = frameWidth * scaleX;
     final cropHeight = frameHeight * scaleY;
 
-    // debugPrint("📷 left: $left");
-    // debugPrint("📷 top: $top");
-    // debugPrint("📷 cropWidth: $cropWidth");
-    // debugPrint("📷 cropHeight: $cropHeight");
-
     final cropRect = img.copyCrop(
       rawImage,
       x: left.round().clamp(0, imageWidth - 1),

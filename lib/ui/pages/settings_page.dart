@@ -73,7 +73,7 @@ class SettingsPage extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  'Finance Division',
+                  'CMO - Consumer Finance',
                   style: whiteTextStyle.copyWith(
                     fontSize: 12,
                     fontWeight: medium,

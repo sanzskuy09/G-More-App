@@ -93,7 +93,7 @@ class ProgressPage extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Daftar Konsumen'),
+        title: const Text('DAFTAR KONSUMEN'),
         automaticallyImplyLeading: false,
       ),
       body: ValueListenableBuilder(
