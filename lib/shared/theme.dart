@@ -10,6 +10,7 @@ Color greyColor = const Color(0xFF6B6B6B);
 Color darkGreyColor = const Color(0xFFAEAEAE);
 Color blackColor = const Color(0xFF000000);
 Color whiteColor = const Color(0xFFFFFFFF);
+Color redColor = const Color(0xFFEB5757);
 
 Color lightBackgorundColor = const Color(0xFFD9D9D9);
 

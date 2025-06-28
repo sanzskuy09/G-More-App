@@ -16,14 +16,18 @@ class DetailStatusSlik extends StatelessWidget {
     IconData icon;
     String displayText;
 
-    if (status == 'pending') {
+    if (status == 'PENDING') {
       bgColor = Colors.orange.shade100;
       icon = Icons.timelapse;
       displayText = 'On Progress';
-    } else if (status == 'success') {
+    } else if (status == 'BERSIH') {
       bgColor = Colors.green.shade100;
       icon = Icons.check_circle;
       displayText = 'Success';
+    } else if (status == 'REJECT') {
+      bgColor = Colors.red.shade200;
+      icon = Icons.cancel;
+      displayText = 'Reject';
     } else {
       bgColor = Colors.grey.shade300;
       icon = Icons.help_outline;

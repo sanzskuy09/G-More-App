@@ -32,6 +32,7 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     'nama': TextEditingController(),
     'tempat': TextEditingController(),
     'tgl_lahir': TextEditingController(),
+    'jeniskelamin': TextEditingController(),
     'alamat': TextEditingController(),
     'rt': TextEditingController(),
     'rw': TextEditingController(),
@@ -91,6 +92,7 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     'nama': TextEditingController(),
     'tempat': TextEditingController(),
     'tgl_lahir': TextEditingController(),
+    'jeniskelamin': TextEditingController(),
     'alamat': TextEditingController(),
     'rt': TextEditingController(),
     'rw': TextEditingController(),
@@ -100,8 +102,9 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     'provinsi': TextEditingController(),
   };
 
-  String _statusPernikahan = 'Belum Kawin';
+  String _statusPernikahan = 'Belum Menikah';
   String? _namaCabang;
+  String? _jeniskelamin;
   List<String> listCabang = ['Depok', 'Jakarta'];
   File? _spouseImage;
   String _spouseExtractedText = '';
@@ -192,19 +195,75 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
   }
 
   Widget buildField(String label, String key) {
+    // Dropdown khusus untuk Jenis Kelamin
+    if (key == 'jeniskelamin') {
+      return Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8),
+        child: DropdownButtonFormField2<String>(
+          value:
+              _controllers[key]!.text.isEmpty ? null : _controllers[key]!.text,
+          isExpanded: true,
+          decoration: InputDecoration(
+            labelText: label,
+            filled: true,
+            fillColor: Colors.grey.shade100,
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(5),
+              borderSide: BorderSide(
+                color: primaryColor,
+                width: 2,
+              ),
+            ),
+          ),
+          dropdownStyleData: DropdownStyleData(
+            padding: EdgeInsets.zero,
+            offset: const Offset(0, 0),
+          ),
+          buttonStyleData: const ButtonStyleData(
+            padding: EdgeInsets.only(right: 8, left: 0),
+          ),
+          menuItemStyleData: const MenuItemStyleData(
+            padding: EdgeInsets.only(left: 14, right: 14),
+          ),
+          items: ['-- Pilih Jenis Kelamin --', 'LAKI-LAKI', 'PEREMPUAN']
+              .map((status) {
+            return DropdownMenuItem(
+              value: status == '-- Pilih Jenis Kelamin --' ? null : status,
+              child: Text(status),
+            );
+          }).toList(),
+          onChanged: (value) {
+            setState(() {
+              _controllers[key]!.text = value ?? '';
+            });
+          },
+        ),
+      );
+    }
+
+    // Default: TextFormField
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
         textCapitalization: TextCapitalization.characters,
-        keyboardType: key == 'nik' ? TextInputType.number : TextInputType.text,
+        keyboardType: key == 'nik' ||
+                key == 'rt' ||
+                key == 'rw' ||
+                key == 'umur' ||
+                key == 'kodepos'
+            ? TextInputType.number
+            : TextInputType.text,
         inputFormatters: key == 'nik'
             ? [
                 LengthLimitingTextInputFormatter(16),
-                FilteringTextInputFormatter(RegExp('[0-9]'), allow: true)
+                FilteringTextInputFormatter.digitsOnly,
               ]
             : null,
         controller: _controllers[key],
-        readOnly: key == 'tgl_lahir', // hanya readonly jika tgl lahir
+        readOnly: key == 'tgl_lahir',
         onTap: key == 'tgl_lahir'
             ? () async {
                 DateTime? pickedDate = await showDatePicker(
@@ -238,11 +297,9 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
                 if (value == null || value.isEmpty) {
                   return 'Nik Wajib Di isi';
                 }
-
                 if (value.length != 16) {
                   return 'Nik Tidak Valid';
                 }
-
                 return null;
               }
             : null,
@@ -250,10 +307,89 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
     );
   }
 
+  // Widget buildField(String label, String key) {
+  //   return Padding(
+  //     padding: const EdgeInsets.symmetric(vertical: 8),
+  //     child: TextFormField(
+  //       textCapitalization: TextCapitalization.characters,
+  //       keyboardType: key == 'nik' ||
+  //               key == 'rt' ||
+  //               key == 'rw' ||
+  //               key == 'umur' ||
+  //               key == 'kodepos'
+  //           ? TextInputType.number
+  //           : TextInputType.text,
+  //       inputFormatters: key == 'nik'
+  //           ? [
+  //               LengthLimitingTextInputFormatter(16),
+  //               FilteringTextInputFormatter(RegExp('[0-9]'), allow: true)
+  //             ]
+  //           : null,
+  //       controller: _controllers[key],
+  //       readOnly: key == 'tgl_lahir', // hanya readonly jika tgl lahir
+  //       onTap: key == 'tgl_lahir'
+  //           ? () async {
+  //               DateTime? pickedDate = await showDatePicker(
+  //                 context: context,
+  //                 initialDate: DateTime.now(),
+  //                 firstDate: DateTime(1900),
+  //                 lastDate: DateTime.now(),
+  //               );
+  //               if (pickedDate != null) {
+  //                 final formattedDate =
+  //                     "${pickedDate.day.toString().padLeft(2, '0')}-${pickedDate.month.toString().padLeft(2, '0')}-${pickedDate.year}";
+  //                 _controllers[key]!.text = formattedDate;
+  //               }
+  //             }
+  //           : null,
+  //       decoration: InputDecoration(
+  //         labelText: label,
+  //         labelStyle: TextStyle(color: blackColor),
+  //         border: const OutlineInputBorder(),
+  //         focusedBorder: OutlineInputBorder(
+  //           borderSide: BorderSide(
+  //             color: primaryColor,
+  //             width: 2,
+  //           ),
+  //         ),
+  //         suffixIcon:
+  //             key == 'tgl_lahir' ? const Icon(Icons.calendar_today) : null,
+  //       ),
+  //       validator: key == 'nik'
+  //           ? (value) {
+  //               if (value == null || value.isEmpty) {
+  //                 return 'Nik Wajib Di isi';
+  //               }
+
+  //               if (value.length != 16) {
+  //                 return 'Nik Tidak Valid';
+  //               }
+
+  //               return null;
+  //             }
+  //           : null,
+  //     ),
+  //   );
+  // }
+
   Widget buildSpouseField(String label, String key) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8),
       child: TextFormField(
+        textCapitalization: TextCapitalization.characters,
+        keyboardType: key == 'nik' ||
+                key == 'rt' ||
+                key == 'rw' ||
+                key == 'umur' ||
+                key == 'kodepos'
+            ? TextInputType.number
+            : TextInputType.text,
+        inputFormatters: key == 'nik'
+            ? [
+                LengthLimitingTextInputFormatter(16),
+                FilteringTextInputFormatter(RegExp('[0-9]'), allow: true)
+              ]
+            : null,
         controller: _spouseControllers[key],
         readOnly: key == 'tgl_lahir', // hanya readonly jika tgl lahir
         onTap: key == 'tgl_lahir'
@@ -357,7 +493,7 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
               isExpanded: true,
               decoration: InputDecoration(
                 // contentPadding: const EdgeInsets.symmetric(horizontal: 5),
-                labelText: 'Status Perkawinan',
+                labelText: 'Status Pernikahan',
                 // prefixIcon: const Icon(Icons.favorite, color: Colors.redAccent),
                 filled: true,
                 fillColor: Colors.grey.shade100,
@@ -386,15 +522,16 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
               menuItemStyleData: const MenuItemStyleData(
                 padding: EdgeInsets.only(left: 14, right: 14),
               ),
-              items: ['Belum Kawin', 'Kawin', 'Cerai Hidup', 'Cerai Mati']
-                  .map((status) {
+              items: ['Menikah', 'Belum Menikah', 'Janda/Duda'].map((status) {
                 return DropdownMenuItem(
                   value: status,
                   child: Row(
                     children: [
                       Icon(
-                        status == 'Kawin' ? Icons.group : Icons.person_outline,
-                        color: status == 'Kawin' ? Colors.green : Colors.grey,
+                        status == 'Menikah'
+                            ? Icons.group
+                            : Icons.person_outline,
+                        color: status == 'Menikah' ? Colors.green : Colors.grey,
                       ),
                       const SizedBox(width: 10),
                       Text(status),
@@ -454,8 +591,10 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
             const SizedBox(height: 10),
             if (_image != null) Image.file(_image!),
             SizedBox(height: 10),
+            buildField('Jenis Kelamin', 'jeniskelamin'),
             buildField('Nama', 'nama'),
             buildField('NIK', 'nik'),
+            buildField('Umur', 'umur'),
             buildField('Tempat Lahir', 'tempat'),
             buildField('Tanggal Lahir', 'tgl_lahir'),
             Container(
@@ -517,83 +656,21 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
                           ],
                         ),
                         buildField('Kelurahan/Desa', 'kel'),
-                        buildField('Kecataman', 'kec'),
+                        buildField('Kecamatan', 'kec'),
                         buildField('Kota', 'kota'),
                         buildField('Provinsi', 'provinsi'),
+                        buildField('Kode Pos', 'kodepos'),
                       ],
                     ),
                   ),
                 ],
               ),
             ),
-            // Accordion(
-            //     openAndCloseAnimation: true,
-            //     headerBackgroundColor: secondaryColor,
-            //     headerBorderColor: secondaryColor,
-            //     headerBorderColorOpened: Colors.transparent,
-            //     // headerBorderWidth: 1,
-            //     headerBackgroundColorOpened: primaryColor,
-            //     contentBackgroundColor: Colors.white,
-            //     contentBorderColor: primaryColor,
-            //     contentBorderWidth: 2,
-            //     contentHorizontalPadding: 0,
-            //     scaleWhenAnimating: true,
-            //     paddingListHorizontal: 0,
-            //     paddingListTop: 10,
-            //     paddingListBottom: 0,
-            //     headerBorderRadius: 5,
-            //     headerPadding:
-            //         const EdgeInsets.symmetric(vertical: 13, horizontal: 15),
-            //     sectionOpeningHapticFeedback: SectionHapticFeedback.heavy,
-            //     sectionClosingHapticFeedback: SectionHapticFeedback.light,
-            //     children: [
-            //       AccordionSection(
-            //           isOpen: true,
-            //           headerBorderRadius: 5,
-            //           contentBorderRadius: 5,
-            //           contentVerticalPadding: 10,
-            //           contentHorizontalPadding: 10,
-            //           leftIcon: const Icon(Icons.question_answer_outlined,
-            //               color: Colors.white),
-            //           header: Text(
-            //             'Alamat KTP',
-            //             style: whiteTextStyle.copyWith(
-            //                 fontSize: 16, fontWeight: semiBold),
-            //           ),
-            //           content: Column(
-            //             children: [
-            //               buildField('Alamat', 'alamat'),
-            //               Row(
-            //                 children: [
-            //                   Expanded(
-            //                     child: buildField('RT', 'rt'),
-            //                   ),
-            //                   const SizedBox(
-            //                     width: 10,
-            //                   ),
-            //                   Text(
-            //                     '/',
-            //                     style: blackTextStyle.copyWith(fontSize: 16),
-            //                   ),
-            //                   const SizedBox(
-            //                     width: 10,
-            //                   ),
-            //                   Expanded(
-            //                     child: buildField('RW', 'rw'),
-            //                   )
-            //                 ],
-            //               ),
-            //               buildField('Kelurahan/Desa', 'kel'),
-            //               buildField('Kecataman', 'kec'),
-            //               buildField('Kota', 'kota'),
-            //               buildField('Provinsi', 'provinsi'),
-            //             ],
-            //           )),
-            //     ]),
+
             // Upload KTP PRIBADI END
             // ================================
             // Upload KTP PASANGAN (SPOUSE) START
-            if (_statusPernikahan == 'Kawin') ...[
+            if (_statusPernikahan == 'Menikah') ...[
               const Divider(),
               const SizedBox(height: 10),
               Align(
@@ -632,6 +709,7 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
               const SizedBox(height: 10),
               buildSpouseField('Nama', 'nama'),
               buildSpouseField('NIK', 'nik'),
+              buildSpouseField('Umur', 'umur'),
               buildSpouseField('Tempat Lahir', 'tempat'),
               buildSpouseField('Tanggal Lahir', 'tgl_lahir'),
               // buildSpouseField('Alamat Pasangan', 'alamat'),
@@ -689,9 +767,10 @@ class _KtpOcrPageState extends State<KtpOcrPage> {
                             ],
                           ),
                           buildSpouseField('Kelurahan/Desa', 'kel'),
-                          buildSpouseField('Kecataman', 'kec'),
+                          buildSpouseField('Kecamatan', 'kec'),
                           buildSpouseField('Kota', 'kota'),
                           buildSpouseField('Provinsi', 'provinsi'),
+                          buildSpouseField('Kode Pos', 'kodepos'),
                         ],
                       ),
                     ),

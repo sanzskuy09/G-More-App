@@ -1,104 +1,137 @@
 import 'package:flutter/material.dart';
-import 'package:gmore/models/konsumen_model.dart';
+import 'package:gmore/models/order_model.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:gmore/ui/widgets/buttons.dart';
-import 'package:gmore/ui/widgets/detail_status_slik.dart';
+import 'package:gmore/ui/widgets/detail_status_slik.dart'; // Asumsi widget ini sudah ada
+import 'dart:typed_data'; // Diperlukan untuk Uint8List
+
+// --- SALIN DAN GANTI SEMUA KODE DI FILE ANDA DENGAN INI ---
 
 class DetailProgressPage extends StatelessWidget {
-  final KonsumenModel konsumen;
+  final OrderModel order;
 
-  const DetailProgressPage({super.key, required this.konsumen});
+  const DetailProgressPage({super.key, required this.order});
 
-  String tampilkanAtauStrip(String? value) {
-    return value?.trim().isNotEmpty == true ? value! : '-';
-  }
+  // Helper untuk memastikan string tidak null atau kosong
+  String safeString(dynamic val) => val?.toString() ?? '';
+  bool isNotEmpty(dynamic val) =>
+      val != null && val.toString().trim().isNotEmpty;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Detail Konsumen')),
-      body: Padding(
-        padding: const EdgeInsets.all(16),
-        child: ListView(
-          children: [
-            Align(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                'Data Pribadi',
-                style: greyTextStyle.copyWith(
-                  fontSize: 16,
-                  fontWeight: semiBold,
-                ),
-              ),
-            ),
-            Center(
-              child: konsumen.fotoKtp != null
-                  ? Image.memory(
-                      konsumen.fotoKtp!,
-                      width: 150,
-                      height: 150,
-                      fit: BoxFit.cover,
-                    )
-                  : const Icon(Icons.person, size: 100),
+      // 1. Latar belakang abu-abu untuk kontras dengan Card putih
+      backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(title: const Text('Detail order')),
+      body: ListView(
+        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+        children: [
+          // 2. Widget Header untuk Info Utama
+          _buildHeaderCard(context),
+          const SizedBox(height: 16),
+
+          // 3. Card untuk Data Pribadi
+          _buildSectionCard(
+            title: 'Data Pribadi',
+            children: [
+              _buildInfoRow(Icons.person_outline, 'Nama', order.nama),
+              _buildInfoRow(Icons.credit_card_outlined, 'NIK', order.nik),
+              _buildInfoRow(Icons.wc_outlined, 'Jenis Kelamin',
+                  order.jeniskelamin == 1 ? 'LAKI-LAKI' : 'PEREMPUAN'),
+              _buildInfoRow(Icons.cake_outlined, 'Tmp/Tgl Lahir',
+                  '${safeString(order.tempatlahir)}, ${safeString(order.tgllahir)}'),
+              _buildInfoRow(Icons.calendar_today_outlined, 'Umur',
+                  '${safeString(order.umur)} Tahun'),
+              _buildInfoRow(
+                  Icons.home_outlined, 'Alamat', _buildFullAddress(order)),
+            ],
+          ),
+          const SizedBox(height: 16),
+
+          // 4. Card untuk Data Pasangan (hanya muncul jika menikah)
+          if (order.statuspernikahan == 'Menikah') ...[
+            _buildSectionCard(
+              isPartner: true,
+              title: 'Data Pasangan',
+              children: [
+                _buildInfoRow(Icons.person_outline, 'Nama Pasangan',
+                    safeString(order.namapasangan)),
+                _buildInfoRow(Icons.credit_card_outlined, 'NIK Pasangan',
+                    safeString(order.nikpasangan)),
+                _buildInfoRow(Icons.cake_outlined, 'Tmp/Tgl Lahir',
+                    '${safeString(order.tempatlahirpasangan)}, ${safeString(order.tgllahirpasangan)}'),
+                _buildInfoRow(Icons.home_outlined, 'Alamat Pasangan',
+                    _buildFullAddress(order, isPartner: true)),
+              ],
             ),
             const SizedBox(height: 16),
-            _buildDetail('NIK', konsumen.nik),
-            _buildDetail('Nama', konsumen.nama),
-            _buildDetail('Tempat Lahir', konsumen.tempat),
-            _buildDetail('Tanggal Lahir', konsumen.tglLahir),
-            _buildDetail('Alamat', konsumen.alamat),
-            if (konsumen.statusPernikahan == 'Menikah')
-              Column(
-                children: [
-                  const Divider(),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                      'Data Pasangan',
-                      style: greyTextStyle.copyWith(
-                        fontSize: 16,
-                        fontWeight: semiBold,
-                      ),
-                    ),
-                  ),
-                  Center(
-                    child: konsumen.fotoKtpPasangan != null
-                        ? Image.memory(
-                            konsumen.fotoKtpPasangan!,
-                            width: 150,
-                            height: 150,
-                            fit: BoxFit.cover,
-                          )
-                        : const Icon(Icons.person, size: 100),
-                  ),
-                  const SizedBox(height: 16),
-                  _buildDetail(
-                      'NIK ', tampilkanAtauStrip(konsumen.nikPasangan)),
-                  _buildDetail(
-                      'Nama ', tampilkanAtauStrip(konsumen.namaPasangan)),
-                  _buildDetail('Tempat Lahir ',
-                      tampilkanAtauStrip(konsumen.tempatPasangan)),
-                  _buildDetail('Tanggal Lahir ',
-                      tampilkanAtauStrip(konsumen.tglLahirPasangan)),
-                  _buildDetail(
-                      'Alamat ', tampilkanAtauStrip(konsumen.alamatPasangan)),
-                ],
+          ],
+
+          // 5. Card untuk Info Lainnya
+          _buildSectionCard(
+            title: 'Informasi Lainnya',
+            children: [
+              _buildInfoRow(
+                  Icons.store_outlined, 'Dealer', safeString(order.dealer)),
+              _buildInfoRow(Icons.note_alt_outlined, 'Catatan',
+                  safeString(order.catatan)),
+              // Menggunakan widget status slik yang sudah ada
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0),
+                child: DetailStatusSlik(
+                    label: 'Hasil Slik', status: order.statusslik),
               ),
-            const Divider(),
-            _buildDetail('Show Room', konsumen.showRoom),
-            _buildDetail('Catatan', tampilkanAtauStrip(konsumen.catatan)),
-            // _buildDetailStatus('Status', konsumen.status),
-            DetailStatusSlik(label: 'Hasil Slik', status: konsumen.status),
-            const Divider(),
-            const SizedBox(height: 8),
-            CustomFilledButton(
-                title: "Lanjut Survey", color: successColor, onPressed: () {}),
-            const SizedBox(height: 5),
-            TextButton(
-              onPressed: () {},
-              child: Text(
-                'Reject',
-                style: TextStyle(color: Colors.red, fontWeight: semiBold),
+            ],
+          ),
+        ],
+      ),
+      // 6. Tombol Aksi di bagian bawah layar
+      bottomNavigationBar: _buildActionButtons(context),
+    );
+  }
+
+  // WIDGET BARU: Header Card
+  Widget _buildHeaderCard(BuildContext context) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Row(
+          children: [
+            // Foto dengan bentuk lingkaran
+            CircleAvatar(
+              radius: 35,
+              backgroundColor: primaryColor.withOpacity(0.1),
+              backgroundImage:
+                  order.fotoktp != null ? MemoryImage(order.fotoktp!) : null,
+              child: order.fotoktp == null
+                  ? Icon(Icons.person, size: 40, color: primaryColor)
+                  : null,
+            ),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    order.nama ?? 'Nama Tidak Tersedia',
+                    style:
+                        blackTextStyle.copyWith(fontSize: 18, fontWeight: bold),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Status: ${safeString(order.statuspernikahan)}',
+                    style: greyTextStyle.copyWith(fontSize: 14),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    'Sync Data : ${safeString(order.isSynced) == 'true' ? 'Sudah' : 'Belum'}',
+                    style: greyTextStyle.copyWith(fontSize: 14),
+                  ),
+                ],
               ),
             ),
           ],
@@ -107,24 +140,140 @@ class DetailProgressPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDetail(String label, String value) {
+  // WIDGET BARU: Section Card yang reusable
+  Widget _buildSectionCard(
+      {required String title,
+      required List<Widget> children,
+      bool isPartner = false}) {
+    return Card(
+      elevation: 2,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                Icon(isPartner ? Icons.favorite_border : Icons.info_outline,
+                    color: primaryColor, size: 20),
+                const SizedBox(width: 8),
+                Text(
+                  title,
+                  style: blackTextStyle.copyWith(
+                      fontSize: 16, fontWeight: semiBold),
+                ),
+              ],
+            ),
+            const Divider(height: 24),
+            ...children,
+          ],
+        ),
+      ),
+    );
+  }
+
+  // WIDGET BARU: Row Info dengan Ikon
+  Widget _buildInfoRow(IconData icon, String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SizedBox(
-            width: 120,
-            child: Text(
-              '$label:',
-              style: const TextStyle(fontWeight: FontWeight.bold),
-            ),
-          ),
+          Icon(icon, color: Colors.grey.shade500, size: 20),
+          const SizedBox(width: 16),
           Expanded(
-            child: Text(value),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(label, style: greyTextStyle.copyWith(fontSize: 12)),
+                const SizedBox(height: 2),
+                Text(
+                  isNotEmpty(value) ? value : '-',
+                  style:
+                      blackTextStyle.copyWith(fontSize: 14, fontWeight: medium),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
+  }
+
+  // WIDGET BARU: Bottom Action Buttons
+  Widget _buildActionButtons(BuildContext context) {
+    final String statusSlik = order.statusslik.toUpperCase();
+    final bool isButtonDisabled =
+        statusSlik == 'PENDING' || statusSlik == 'REJECT';
+
+    return Container(
+      padding: const EdgeInsets.fromLTRB(
+          16, 16, 16, 32), // Padding bawah lebih besar untuk safe area
+      decoration: BoxDecoration(
+        color: whiteColor,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.05),
+            blurRadius: 10,
+            offset: const Offset(0, -5),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: OutlinedButton(
+              onPressed: () {/* Logika Reject */},
+              style: OutlinedButton.styleFrom(
+                  foregroundColor: redColor,
+                  side: BorderSide(color: redColor),
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12)),
+                  padding: const EdgeInsets.symmetric(vertical: 14)),
+              child: const Text('Reject'),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: CustomFilledButton(
+              title: "Lanjut Survey",
+              color: isButtonDisabled ? greyColor : successColor,
+              onPressed: isButtonDisabled
+                  ? null
+                  : () {
+                      // Logika Lanjut Survey hanya berjalan jika tombol aktif
+                      print('Tombol Lanjut Survey Ditekan!');
+                    },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  // HELPER BARU: Menggabungkan alamat menjadi satu string yang rapi
+  String _buildFullAddress(OrderModel data, {bool isPartner = false}) {
+    final address = isPartner ? data.alamatpasangan : data.alamat;
+    final rt = isPartner ? data.rtpasangan : data.rt;
+    final rw = isPartner ? data.rwpasangan : data.rw;
+    final kel = isPartner ? data.kelpasangan : data.kel;
+    final kec = isPartner ? data.kecpasangan : data.kec;
+    final kota = isPartner ? data.kotapasangan : data.kota;
+    final prov = isPartner ? data.provinsipasangan : data.provinsi;
+    final kodepos = isPartner ? data.kodepospasangan : data.kodepos;
+
+    List<String> parts = [
+      if (isNotEmpty(address)) safeString(address),
+      if (isNotEmpty(rt) || isNotEmpty(rw))
+        'RT ${safeString(rt)}/RW ${safeString(rw)}',
+      if (isNotEmpty(kel)) 'Kel. ${safeString(kel)}',
+      if (isNotEmpty(kec)) 'Kec. ${safeString(kec)}',
+      if (isNotEmpty(kota)) safeString(kota),
+      if (isNotEmpty(prov)) safeString(prov),
+      if (isNotEmpty(kodepos)) safeString(kodepos),
+    ];
+
+    return parts.join(', ');
   }
 }

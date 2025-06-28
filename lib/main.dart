@@ -4,9 +4,10 @@ import 'package:gmore/blocs/auth/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'package:gmore/models/konsumen_model.dart';
+import 'package:gmore/models/order_model.dart';
 import 'package:gmore/shared/theme.dart';
+import 'package:gmore/ui/pages/create_order_page.dart';
 
-import 'package:gmore/ui/pages/customer_form.dart';
 import 'package:gmore/ui/pages/home_page.dart';
 import 'package:gmore/ui/pages/ktp_ocr_page.dart';
 import 'package:gmore/ui/pages/login_user_page.dart';
@@ -39,8 +40,10 @@ void main() async {
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
   Hive.registerAdapter(KonsumenModelAdapter());
+  Hive.registerAdapter(OrderModelAdapter());
 
   await Hive.openBox<KonsumenModel>('konsumen');
+  await Hive.openBox<OrderModel>('orders');
 
   runApp(const MyApp());
 }
@@ -76,8 +79,8 @@ class MyApp extends StatelessWidget {
           '/login': (context) => const LoginUserPage(),
           '/main': (context) => const MainPage(),
           '/homepage': (context) => const HomePage(),
-          '/customer-form': (context) => const CustomerFormPage(),
-          '/ocr-ktp': (context) => const KtpOcrPage(),
+          // '/ocr-ktp': (context) => const KtpOcrPage(),
+          '/ocr-ktp': (context) => const CreateOrderPage(),
           '/settings': (context) => const SettingsPage(),
           '/progress': (context) => const ProgressPage(),
           '/daftar-konsumen': (context) => const MainPage(selectedIndex: 1),
