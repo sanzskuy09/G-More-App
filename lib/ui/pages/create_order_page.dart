@@ -537,7 +537,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
               ),
               FieldBuilder(
                 label: 'Tempat Lahir',
-                keyName: 'tempat',
+                keyName: 'tempatlahir',
                 controllers: _controllers,
               ),
               FieldBuilder(
@@ -706,7 +706,7 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                 ),
                 FieldBuilder(
                   label: 'Tempat Lahir',
-                  keyName: 'tempatpasangan',
+                  keyName: 'tempatlahirpasangan',
                   controllers: _controllers,
                 ),
                 FieldBuilder(

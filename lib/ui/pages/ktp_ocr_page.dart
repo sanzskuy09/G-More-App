@@ -8,7 +8,6 @@ import 'package:gmore/models/konsumen_model.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:gmore/ui/widgets/buttons.dart';
 import 'package:gmore/ui/widgets/ktp2_camera.dart';
-import 'package:gmore/ui/widgets/ktp_camera.dart';
 import 'package:gmore/ui/widgets/upload_foto.dart';
 import 'package:gmore/utils/ktp_parser.dart';
 import 'package:google_mlkit_text_recognition/google_mlkit_text_recognition.dart';

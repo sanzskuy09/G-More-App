@@ -93,7 +93,7 @@ class DetailProgressPage extends StatelessWidget {
   // WIDGET BARU: Header Card
   Widget _buildHeaderCard(BuildContext context) {
     return Card(
-      elevation: 2,
+      elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -146,7 +146,7 @@ class DetailProgressPage extends StatelessWidget {
       required List<Widget> children,
       bool isPartner = false}) {
     return Card(
-      elevation: 2,
+      elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
