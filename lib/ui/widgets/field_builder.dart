@@ -4,17 +4,20 @@ import 'package:flutter_holo_date_picker/flutter_holo_date_picker.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:gmore/utils/field_validator.dart';
+import 'package:intl/intl.dart';
 
 class FieldBuilder extends StatelessWidget {
   final String label;
   final String keyName;
   final Map<String, TextEditingController> controllers;
+  final Function(DateTime selectedDate)? onDateSelected;
 
   const FieldBuilder({
     super.key,
     required this.label,
     required this.keyName,
     required this.controllers,
+    this.onDateSelected,
   });
 
   @override
@@ -53,9 +56,12 @@ class FieldBuilder extends StatelessWidget {
                 );
 
                 if (datePicked != null) {
-                  final formattedDate =
-                      "${datePicked.day.toString().padLeft(2, '0')}-${datePicked.month.toString().padLeft(2, '0')}-${datePicked.year}";
-                  controllers[keyName]!.text = formattedDate;
+                  onDateSelected!(datePicked);
+                  // final formattedDate =
+                  //     "${datePicked.day.toString().padLeft(2, '0')}-${datePicked.month.toString().padLeft(2, '0')}-${datePicked.year}";
+                  // final formattedDateForUI =
+                  //     DateFormat('yyyy-MM-dd').format(datePicked);
+                  // controllers[keyName]!.text = datePicked;
                 }
               }
             : null,
@@ -74,7 +80,7 @@ class FieldBuilder extends StatelessWidget {
               : null,
         ),
         validator: (value) {
-          print('Key name: $keyName, Label: $label, Value: $value');
+          // print('Key name: $keyName, Label: $label, Value: $value');
           return validateField(keyName, label, value);
         },
       ),

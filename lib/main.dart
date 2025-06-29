@@ -21,6 +21,7 @@ import 'package:gmore/ui/pages/settings_pages/log_page.dart';
 import 'package:gmore/ui/pages/settings_pages/profile_page.dart';
 import 'package:gmore/ui/pages/settings_pages/promo_page.dart';
 import 'package:gmore/ui/pages/splash_page.dart';
+import 'package:gmore/utils/hive_adapters.dart';
 
 import 'package:intl/intl.dart';
 import 'package:intl/date_symbol_data_local.dart';
@@ -45,6 +46,7 @@ void main() async {
 
   Hive.registerAdapter(KonsumenModelAdapter());
   Hive.registerAdapter(OrderModelAdapter());
+  Hive.registerAdapter(DateTimeAdapter());
 
   await Hive.openBox<KonsumenModel>('konsumen');
   await Hive.openBox<OrderModel>('orders');

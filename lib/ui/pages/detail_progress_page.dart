@@ -3,7 +3,9 @@ import 'package:gmore/models/order_model.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:gmore/ui/widgets/buttons.dart';
 import 'package:gmore/ui/widgets/detail_status_slik.dart'; // Asumsi widget ini sudah ada
-import 'dart:typed_data'; // Diperlukan untuk Uint8List
+import 'dart:typed_data';
+
+import 'package:intl/intl.dart'; // Diperlukan untuk Uint8List
 
 // --- SALIN DAN GANTI SEMUA KODE DI FILE ANDA DENGAN INI ---
 
@@ -39,7 +41,7 @@ class DetailProgressPage extends StatelessWidget {
               _buildInfoRow(Icons.wc_outlined, 'Jenis Kelamin',
                   order.jeniskelamin == 1 ? 'LAKI-LAKI' : 'PEREMPUAN'),
               _buildInfoRow(Icons.cake_outlined, 'Tmp/Tgl Lahir',
-                  '${safeString(order.tempatlahir)}, ${safeString(order.tgllahir)}'),
+                  '${safeString(order.tempatlahir)}, ${order.tgllahir != null ? DateFormat('dd-MM-yyyy', 'id_ID').format(order.tgllahir!) : '-'}'),
               _buildInfoRow(Icons.calendar_today_outlined, 'Umur',
                   '${safeString(order.umur)} Tahun'),
               _buildInfoRow(
@@ -49,7 +51,7 @@ class DetailProgressPage extends StatelessWidget {
           const SizedBox(height: 16),
 
           // 4. Card untuk Data Pasangan (hanya muncul jika menikah)
-          if (order.statusperkawinan == 'Menikah') ...[
+          if (order.statusperkawinan!.toLowerCase() == 'menikah') ...[
             _buildSectionCard(
               isPartner: true,
               title: 'Data Pasangan',
@@ -58,8 +60,11 @@ class DetailProgressPage extends StatelessWidget {
                     safeString(order.namapasangan)),
                 _buildInfoRow(Icons.credit_card_outlined, 'NIK Pasangan',
                     safeString(order.nikpasangan)),
-                _buildInfoRow(Icons.cake_outlined, 'Tmp/Tgl Lahir',
-                    '${safeString(order.tempatlahirpasangan)}, ${safeString(order.tgllahirpasangan)}'),
+                _buildInfoRow(
+                  Icons.cake_outlined,
+                  'Tmp/Tgl Lahir',
+                  '${safeString(order.tempatlahirpasangan)}, ${order.tgllahirpasangan != null ? DateFormat('dd-MM-yyyy', 'id_ID').format(order.tgllahirpasangan!) : '-'}',
+                ),
                 _buildInfoRow(Icons.home_outlined, 'Alamat Pasangan',
                     _buildFullAddress(order, isPartner: true)),
               ],
