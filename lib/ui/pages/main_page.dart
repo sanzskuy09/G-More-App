@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gmore/blocs/bloc/order_bloc.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:gmore/ui/pages/check_order_page.dart';
 import 'package:gmore/ui/pages/home_page.dart';
@@ -19,6 +21,7 @@ class MainPage extends StatefulWidget {
 
 class _MainPageState extends State<MainPage> {
   late int _selectedIndex = 0;
+  bool _isProgressPageInitiated = false;
 
   final List<Widget> _pages = const [
     HomePage(),
@@ -28,6 +31,14 @@ class _MainPageState extends State<MainPage> {
   ];
 
   void _onTabTapped(int index) {
+    if (index == 1 && !_isProgressPageInitiated) {
+      context.read<OrderBloc>().add(FetchOrdersFromAPI());
+
+      setState(() {
+        _isProgressPageInitiated = true;
+      });
+    }
+
     setState(() {
       _selectedIndex = index;
     });
@@ -37,6 +48,11 @@ class _MainPageState extends State<MainPage> {
   void initState() {
     super.initState();
     _selectedIndex = widget.selectedIndex;
+
+    if (_selectedIndex == 1) {
+      context.read<OrderBloc>().add(FetchOrdersFromAPI());
+      _isProgressPageInitiated = true;
+    }
   }
 
   @override
@@ -48,9 +64,6 @@ class _MainPageState extends State<MainPage> {
       ),
       bottomNavigationBar: BottomAppBar(
         color: whiteColor,
-        // elevation: 20,
-        // shadowColor: blackColor,
-        // surfaceTintColor: blackColor,
         child: SizedBox(
           height: 70, // Atur tinggi sesuai kebutuhan
           child: Row(
@@ -69,10 +82,6 @@ class _MainPageState extends State<MainPage> {
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
                 ),
                 onPressed: () {
-                  // Navigator.pushNamed(context, '/new-order');
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(builder: (_) => const NewOrderPage()),
-                  // );
                   showDialog(
                       context: context, builder: (context) => MoreDialog());
                 },

@@ -18,52 +18,54 @@ class OrderModelAdapter extends TypeAdapter<OrderModel> {
     };
     return OrderModel(
       id: fields[0] as int?,
-      cabang: fields[1] as String,
-      statuspernikahan: fields[2] as String,
-      jeniskelamin: fields[3] as int,
-      umur: fields[4] as String,
-      nama: fields[5] as String,
-      nik: fields[6] as String,
-      tempatlahir: fields[7] as String,
-      tgllahir: fields[8] as String,
-      alamat: fields[9] as String,
-      rt: fields[10] as String,
-      rw: fields[11] as String,
-      kel: fields[12] as String,
-      kec: fields[13] as String,
-      kota: fields[32] as String?,
-      provinsi: fields[14] as String,
-      kodepos: fields[15] as String,
+      cabang: fields[1] as String?,
+      statusperkawinan: fields[2] as String?,
+      jeniskelamin: fields[3] as int?,
+      umur: fields[4] as int?,
+      nama: fields[5] as String?,
+      nik: fields[6] as String?,
+      tempatlahir: fields[7] as String?,
+      tgllahir: fields[8] as String?,
+      alamat: fields[9] as String?,
+      rt: fields[10] as String?,
+      rw: fields[11] as String?,
+      kel: fields[12] as String?,
+      kec: fields[13] as String?,
+      kota: fields[33] as String?,
+      provinsi: fields[14] as String?,
+      kodepos: fields[15] as String?,
       fotoktp: fields[16] as Uint8List?,
-      nikpasangan: fields[17] as String?,
-      tempatlahirpasangan: fields[18] as String?,
-      tgllahirpasangan: fields[19] as String?,
-      alamatpasangan: fields[20] as String?,
-      rtpasangan: fields[21] as String?,
-      rwpasangan: fields[22] as String?,
-      kelpasangan: fields[23] as String?,
-      kecpasangan: fields[24] as String?,
-      kotapasangan: fields[33] as String?,
-      provinsipasangan: fields[25] as String?,
-      kodepospasangan: fields[26] as String?,
-      fotoktppasangan: fields[27] as Uint8List?,
-      isSynced: fields[28] as bool?,
-      statusslik: fields[29] as String,
-      dealer: fields[30] as String?,
-      catatan: fields[31] as String?,
+      namapasangan: fields[17] as String?,
+      nikpasangan: fields[18] as String?,
+      tempatlahirpasangan: fields[19] as String?,
+      tgllahirpasangan: fields[20] as String?,
+      alamatpasangan: fields[21] as String?,
+      rtpasangan: fields[22] as String?,
+      rwpasangan: fields[23] as String?,
+      kelpasangan: fields[24] as String?,
+      kecpasangan: fields[25] as String?,
+      kotapasangan: fields[34] as String?,
+      provinsipasangan: fields[26] as String?,
+      kodepospasangan: fields[27] as String?,
+      fotoktppasangan: fields[28] as Uint8List?,
+      isSynced: fields[29] as bool?,
+      statusslik: fields[30] as String?,
+      dealer: fields[31] as String?,
+      catatan: fields[32] as String?,
+      is_survey: fields[35] as int?,
     );
   }
 
   @override
   void write(BinaryWriter writer, OrderModel obj) {
     writer
-      ..writeByte(34)
+      ..writeByte(36)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
       ..write(obj.cabang)
       ..writeByte(2)
-      ..write(obj.statuspernikahan)
+      ..write(obj.statusperkawinan)
       ..writeByte(3)
       ..write(obj.jeniskelamin)
       ..writeByte(4)
@@ -93,39 +95,43 @@ class OrderModelAdapter extends TypeAdapter<OrderModel> {
       ..writeByte(16)
       ..write(obj.fotoktp)
       ..writeByte(17)
-      ..write(obj.nikpasangan)
+      ..write(obj.namapasangan)
       ..writeByte(18)
-      ..write(obj.tempatlahirpasangan)
+      ..write(obj.nikpasangan)
       ..writeByte(19)
-      ..write(obj.tgllahirpasangan)
+      ..write(obj.tempatlahirpasangan)
       ..writeByte(20)
-      ..write(obj.alamatpasangan)
+      ..write(obj.tgllahirpasangan)
       ..writeByte(21)
-      ..write(obj.rtpasangan)
+      ..write(obj.alamatpasangan)
       ..writeByte(22)
-      ..write(obj.rwpasangan)
+      ..write(obj.rtpasangan)
       ..writeByte(23)
-      ..write(obj.kelpasangan)
+      ..write(obj.rwpasangan)
       ..writeByte(24)
-      ..write(obj.kecpasangan)
+      ..write(obj.kelpasangan)
       ..writeByte(25)
-      ..write(obj.provinsipasangan)
+      ..write(obj.kecpasangan)
       ..writeByte(26)
-      ..write(obj.kodepospasangan)
+      ..write(obj.provinsipasangan)
       ..writeByte(27)
-      ..write(obj.fotoktppasangan)
+      ..write(obj.kodepospasangan)
       ..writeByte(28)
-      ..write(obj.isSynced)
+      ..write(obj.fotoktppasangan)
       ..writeByte(29)
-      ..write(obj.statusslik)
+      ..write(obj.isSynced)
       ..writeByte(30)
-      ..write(obj.dealer)
+      ..write(obj.statusslik)
       ..writeByte(31)
-      ..write(obj.catatan)
+      ..write(obj.dealer)
       ..writeByte(32)
-      ..write(obj.kota)
+      ..write(obj.catatan)
       ..writeByte(33)
-      ..write(obj.kotapasangan);
+      ..write(obj.kota)
+      ..writeByte(34)
+      ..write(obj.kotapasangan)
+      ..writeByte(35)
+      ..write(obj.is_survey);
   }
 
   @override

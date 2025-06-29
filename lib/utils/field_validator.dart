@@ -9,7 +9,8 @@ String? validateField(String key, String label, String? value) {
     'kota',
     'provinsi',
     'kodepos',
-    'tgl_lahir',
+    'tampatlahir',
+    'tgllahir',
     'dealer',
   ].contains(key)) {
     if (value == null || value.trim().isEmpty) {
@@ -20,6 +21,12 @@ String? validateField(String key, String label, String? value) {
   if (key == 'nik') {
     if (value == null || value.isEmpty) return 'NIK wajib diisi';
     if (value.length != 16) return 'NIK harus 16 digit';
+  }
+
+  if (key == 'nikpasangan') {
+    if (value == null || value.isEmpty && value.length != 16) {
+      return 'NIK harus 16 digit';
+    }
   }
 
   if (key == 'rt' || key == 'rw') {

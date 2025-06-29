@@ -9,20 +9,26 @@ sealed class OrderState extends Equatable {
 
 final class OrderInitial extends OrderState {}
 
-final class OrderLoading extends OrderState {}
+// State ketika data sedang dimuat dari Hive
+class OrderLoading extends OrderState {}
 
-final class OrderFailed extends OrderState {
-  final String err;
-  const OrderFailed(this.err);
+// State ketika data berhasil dimuat, membawa daftar order
+class OrderLoaded extends OrderState {
+  final List<OrderModel> orders;
+
+  const OrderLoaded(this.orders);
 
   @override
-  List<Object> get props => [err];
+  List<Object> get props => [orders];
 }
 
-final class OrderSuccess extends OrderState {
-  final OrderModel data;
-  const OrderSuccess(this.data);
+class OrderSuccess extends OrderState {}
+
+// State ketika terjadi error saat memuat data
+class OrderError extends OrderState {
+  final String message;
+  const OrderError(this.message);
 
   @override
-  List<Object> get props => [data];
+  List<Object> get props => [message];
 }
