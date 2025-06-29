@@ -8,7 +8,7 @@ class SettingsPage extends StatelessWidget {
 
   void _resetDataHiveTEmp() async {
     // await Hive.deleteBoxFromDisk('konsumen');
-    await Hive.deleteFromDisk();
+    // await Hive.deleteFromDisk();
   }
 
   Future<void> clearAllStorage() async {

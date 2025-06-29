@@ -120,45 +120,46 @@ class _CreateOrderPageState extends State<CreateOrderPage> {
                 // TODO: Kirim ke backend di sini
                 print('Mengirim ke backend: $formData');
 
-                final order = OrderModel(
-                  statusslik: 'REJECT',
-                  cabang: _controllers['cabang']!.text,
-                  statuspernikahan: _controllers['statuspernikahan']!.text,
-                  jeniskelamin: int.parse(_controllers['jeniskelamin']!.text),
-                  umur: _controllers['umur']!.text,
-                  nama: _controllers['nama']!.text,
-                  nik: _controllers['nik']!.text,
-                  tempatlahir: _controllers['tempatlahir']!.text,
-                  tgllahir: _controllers['tgllahir']!.text,
-                  alamat: _controllers['alamat']!.text,
-                  rt: _controllers['rt']!.text,
-                  rw: _controllers['rw']!.text,
-                  kel: _controllers['kel']!.text,
-                  kec: _controllers['kec']!.text,
-                  kota: _controllers['kota']!.text,
-                  provinsi: _controllers['provinsi']!.text,
-                  kodepos: _controllers['kodepos']!.text,
-                  // pasangan
-                  namapasangan: _controllers['namapasangan']!.text,
-                  nikpasangan: _controllers['nikpasangan']!.text,
-                  tempatlahirpasangan:
-                      _controllers['tempatlahirpasangan']!.text,
-                  tgllahirpasangan: _controllers['tgllahirpasangan']!.text,
-                  alamatpasangan: _controllers['alamatpasangan']!.text,
-                  rtpasangan: _controllers['rtpasangan']!.text,
-                  rwpasangan: _controllers['rwpasangan']!.text,
-                  kelpasangan: _controllers['kelpasangan']!.text,
-                  kecpasangan: _controllers['kecpasangan']!.text,
-                  kotapasangan: _controllers['kotapasangan']!.text,
-                  provinsipasangan: _controllers['provinsipasangan']!.text,
-                  kodepospasangan: _controllers['kodepospasangan']!.text,
-                  // delaer
-                  dealer: _controllers['dealer']!.text,
-                  catatan: _controllers['catatan']!.text,
-                );
+                // final order = OrderModel(
+                //   statusslik: 'REJECT',
+                //   cabang: _controllers['cabang']!.text,
+                //   statusperkawinan: _controllers['statuspernikahan']!.text,
+                //   jeniskelamin: int.parse(_controllers['jeniskelamin']!.text),
+                //   umur: _controllers['umur']!.text,
+                //   nama: _controllers['nama']!.text,
+                //   nik: _controllers['nik']!.text,
+                //   tempatlahir: _controllers['tempatlahir']!.text,
+                //   tgllahir: _controllers['tgllahir']!.text,
+                //   alamat: _controllers['alamat']!.text,
+                //   rt: _controllers['rt']!.text,
+                //   rw: _controllers['rw']!.text,
+                //   kel: _controllers['kel']!.text,
+                //   kec: _controllers['kec']!.text,
+                //   kota: _controllers['kota']!.text,
+                //   provinsi: _controllers['provinsi']!.text,
+                //   kodepos: _controllers['kodepos']!.text,
+                //   // pasangan
+                //   namapasangan: _controllers['namapasangan']!.text,
+                //   nikpasangan: _controllers['nikpasangan']!.text,
+                //   tempatlahirpasangan:
+                //       _controllers['tempatlahirpasangan']!.text,
+                //   tgllahirpasangan: _controllers['tgllahirpasangan']!.text,
+                //   alamatpasangan: _controllers['alamatpasangan']!.text,
+                //   rtpasangan: _controllers['rtpasangan']!.text,
+                //   rwpasangan: _controllers['rwpasangan']!.text,
+                //   kelpasangan: _controllers['kelpasangan']!.text,
+                //   kecpasangan: _controllers['kecpasangan']!.text,
+                //   kotapasangan: _controllers['kotapasangan']!.text,
+                //   provinsipasangan: _controllers['provinsipasangan']!.text,
+                //   kodepospasangan: _controllers['kodepospasangan']!.text,
+                //   // delaer
+                //   dealer: _controllers['dealer']!.text,
+                //   catatan: _controllers['catatan']!.text,
+                //   is_survey: false,
+                // );
 
-                final box = Hive.box<OrderModel>('orders');
-                box.add(order);
+                // final box = Hive.box<OrderModel>('orders');
+                // box.add(order);
               },
               child: const Text('Kirim'),
             ),

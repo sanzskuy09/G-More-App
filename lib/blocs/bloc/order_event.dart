@@ -8,9 +8,7 @@ sealed class OrderEvent extends Equatable {
 }
 
 final class GetOrder extends OrderEvent {
-  final OrderModel data;
-  const GetOrder(this.data);
-
-  @override
-  List<Object> get props => [data];
+  const GetOrder();
 }
+
+class FetchOrdersFromAPI extends OrderEvent {}

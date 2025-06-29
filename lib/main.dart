@@ -2,9 +2,11 @@ import 'package:camera/camera.dart';
 import 'package:flutter/material.dart';
 import 'package:gmore/blocs/auth/auth_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:gmore/blocs/bloc/order_bloc.dart';
 
 import 'package:gmore/models/konsumen_model.dart';
 import 'package:gmore/models/order_model.dart';
+import 'package:gmore/services/order_services.dart';
 import 'package:gmore/shared/theme.dart';
 import 'package:gmore/ui/pages/create_order_page.dart';
 
@@ -39,6 +41,8 @@ void main() async {
   // WAJIB: Inisialisasi Hive
   final dir = await getApplicationDocumentsDirectory();
   Hive.init(dir.path);
+  // await Hive.deleteBoxFromDisk('orders');
+
   Hive.registerAdapter(KonsumenModelAdapter());
   Hive.registerAdapter(OrderModelAdapter());
 
@@ -57,6 +61,9 @@ class MyApp extends StatelessWidget {
       providers: [
         BlocProvider<AuthBloc>(
           create: (context) => AuthBloc(),
+        ),
+        BlocProvider<OrderBloc>(
+          create: (context) => OrderBloc(OrderServices()),
         ),
       ],
       child: MaterialApp(

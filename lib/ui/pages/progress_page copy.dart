@@ -5,8 +5,20 @@ import 'package:gmore/models/order_model.dart';
 import 'package:gmore/ui/pages/detail_progress_page.dart';
 import 'package:hive_flutter/adapters.dart';
 
-class ProgressPage extends StatelessWidget {
+class ProgressPage extends StatefulWidget {
   const ProgressPage({super.key});
+
+  @override
+  State<ProgressPage> createState() => _ProgressPageState();
+}
+
+class _ProgressPageState extends State<ProgressPage> {
+  @override
+  void initState() {
+    super.initState();
+    // Panggil event BLoC yang baru untuk memulai sinkronisasi
+    context.read<OrderBloc>().add(FetchOrdersFromAPI());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -16,31 +28,6 @@ class ProgressPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('DAFTAR ORDER'),
         automaticallyImplyLeading: false,
-        actions: [
-          // Tambahkan tombol refresh untuk memicu sinkronisasi manual
-          BlocBuilder<OrderBloc, OrderState>(
-            builder: (context, state) {
-              // Tampilkan icon loading saat sedang sinkronisasi
-              if (state is OrderLoading) {
-                return const Padding(
-                  padding: EdgeInsets.only(right: 20.0),
-                  child: SizedBox(
-                    width: 24,
-                    height: 24,
-                    child: CircularProgressIndicator(
-                        strokeWidth: 2, color: Colors.white),
-                  ),
-                );
-              }
-              return IconButton(
-                icon: const Icon(Icons.refresh),
-                onPressed: () {
-                  context.read<OrderBloc>().add(FetchOrdersFromAPI());
-                },
-              );
-            },
-          ),
-        ],
       ),
       body: BlocListener<OrderBloc, OrderState>(
         listener: (context, state) {
@@ -65,49 +52,30 @@ class ProgressPage extends StatelessWidget {
         child: ValueListenableBuilder(
           valueListenable: box.listenable(),
           builder: (context, Box<OrderModel> box, _) {
-            final orders = box.values.toList(); // Ambil semua data sebagai list
-
-            if (orders.isEmpty) {
-              // Jika box kosong, cek state BLoC
-              return BlocBuilder<OrderBloc, OrderState>(
-                builder: (context, state) {
-                  // Tampilkan loading besar jika sedang sinkronisasi pertama kali
-                  if (state is OrderLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  // Tampilkan pesan jika tidak ada data sama sekali
-                  return const Center(child: Text('Belum ada data order.'));
-                },
-              );
+            if (box.isEmpty) {
+              return const Center(child: Text('Belum ada data order.'));
             }
 
-            // UI ListView Anda yang sudah ada, gunakan `orders` dari hive
             return ListView.builder(
-              itemCount: orders.length,
+              itemCount: box.length,
               itemBuilder: (context, index) {
-                final order = orders[index];
-                // Kode UI Anda untuk menampilkan item...
-                // (Saya salin dari kode Anda)
+                final order = box.getAt(index);
+                if (order == null) return const SizedBox();
+
                 return Padding(
-                  // ... sisanya sama persis
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Material(
                     elevation: 2,
                     borderRadius: BorderRadius.circular(5),
                     child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) =>
-                                DetailProgressPage(order: order),
-                          ),
-                        );
-                      },
                       borderRadius: BorderRadius.circular(5),
                       child: Container(
                         padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5),
+                          color: Colors.white,
+                        ),
                         child: Row(
                           children: [
                             CircleAvatar(
@@ -125,23 +93,32 @@ class ProgressPage extends StatelessWidget {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Text(
-                                    order.nama ?? 'Tanpa Nama',
+                                    order.nama!,
                                     style: const TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 16,
+                                    ),
                                   ),
                                   const SizedBox(height: 4),
-                                  Text('NIK: ${order.nik ?? '-'}'),
-                                  Text('Alamat: ${order.alamat ?? '-'}',
-                                      maxLines: 1,
-                                      overflow: TextOverflow.ellipsis),
+                                  Text('NIK: ${order.nik}'),
+                                  Text('Alamat: ${order.alamat}'),
                                   const SizedBox(height: 6),
-                                  if (order.statusslik != null)
-                                    _buildStatusBadge(order.statusslik!)
+                                  _buildStatusBadge(order.statusslik!),
                                 ],
                               ),
                             ),
-                            const Icon(Icons.chevron_right, color: Colors.grey)
+                            IconButton(
+                              icon: const Icon(Icons.remove_red_eye_rounded),
+                              onPressed: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        DetailProgressPage(order: order),
+                                  ),
+                                );
+                              },
+                            )
                           ],
                         ),
                       ),

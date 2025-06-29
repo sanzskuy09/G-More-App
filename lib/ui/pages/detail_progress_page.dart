@@ -34,8 +34,8 @@ class DetailProgressPage extends StatelessWidget {
           _buildSectionCard(
             title: 'Data Pribadi',
             children: [
-              _buildInfoRow(Icons.person_outline, 'Nama', order.nama),
-              _buildInfoRow(Icons.credit_card_outlined, 'NIK', order.nik),
+              _buildInfoRow(Icons.person_outline, 'Nama', order.nama!),
+              _buildInfoRow(Icons.credit_card_outlined, 'NIK', order.nik!),
               _buildInfoRow(Icons.wc_outlined, 'Jenis Kelamin',
                   order.jeniskelamin == 1 ? 'LAKI-LAKI' : 'PEREMPUAN'),
               _buildInfoRow(Icons.cake_outlined, 'Tmp/Tgl Lahir',
@@ -49,7 +49,7 @@ class DetailProgressPage extends StatelessWidget {
           const SizedBox(height: 16),
 
           // 4. Card untuk Data Pasangan (hanya muncul jika menikah)
-          if (order.statuspernikahan == 'Menikah') ...[
+          if (order.statusperkawinan == 'Menikah') ...[
             _buildSectionCard(
               isPartner: true,
               title: 'Data Pasangan',
@@ -79,7 +79,7 @@ class DetailProgressPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.only(top: 8.0),
                 child: DetailStatusSlik(
-                    label: 'Hasil Slik', status: order.statusslik),
+                    label: 'Hasil Slik', status: order.statusslik!),
               ),
             ],
           ),
@@ -123,7 +123,7 @@ class DetailProgressPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 4),
                   Text(
-                    'Status: ${safeString(order.statuspernikahan)}',
+                    'Status: ${safeString(order.statusperkawinan)}',
                     style: greyTextStyle.copyWith(fontSize: 14),
                   ),
                   const SizedBox(height: 4),
@@ -203,7 +203,7 @@ class DetailProgressPage extends StatelessWidget {
 
   // WIDGET BARU: Bottom Action Buttons
   Widget _buildActionButtons(BuildContext context) {
-    final String statusSlik = order.statusslik.toUpperCase();
+    final String statusSlik = order.statusslik!.toUpperCase();
     final bool isButtonDisabled =
         statusSlik == 'PENDING' || statusSlik == 'REJECT';
 

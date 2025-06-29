@@ -9,98 +9,129 @@ class OrderModel extends HiveObject {
   final int? id;
 
   @HiveField(1)
-  final String cabang;
+  final String? cabang;
+
   @HiveField(2)
-  final String statuspernikahan;
+  final String? statusperkawinan; // Nama disesuaikan dengan JSON
+
   @HiveField(3)
-  final int jeniskelamin;
+  final int? jeniskelamin;
+
   @HiveField(4)
-  final String umur;
+  final int? umur; // Tipe data diubah ke int
+
   @HiveField(5)
-  final String nama;
+  final String? nama;
+
   @HiveField(6)
-  final String nik;
+  final String? nik;
+
   @HiveField(7)
-  final String tempatlahir;
+  final String? tempatlahir;
+
   @HiveField(8)
-  final String tgllahir;
+  final String? tgllahir;
+
   @HiveField(9)
-  final String alamat;
+  final String? alamat;
+
   @HiveField(10)
-  final String rt;
+  final String? rt;
+
   @HiveField(11)
-  final String rw;
+  final String? rw;
+
   @HiveField(12)
-  final String kel;
+  final String? kel;
+
   @HiveField(13)
-  final String kec;
+  final String? kec;
+
   @HiveField(14)
-  final String provinsi;
+  final String? provinsi;
+
   @HiveField(15)
-  final String kodepos;
+  final String? kodepos;
+
   @HiveField(16)
   Uint8List? fotoktp;
 
+  @HiveField(17) // Anotasi ditambahkan
   final String? namapasangan;
-  @HiveField(17)
-  final String? nikpasangan;
+
   @HiveField(18)
-  final String? tempatlahirpasangan;
+  final String? nikpasangan;
+
   @HiveField(19)
-  final String? tgllahirpasangan;
+  final String? tempatlahirpasangan;
+
   @HiveField(20)
-  final String? alamatpasangan;
+  final String? tgllahirpasangan;
+
   @HiveField(21)
-  final String? rtpasangan;
+  final String? alamatpasangan;
+
   @HiveField(22)
-  final String? rwpasangan;
+  final String? rtpasangan;
+
   @HiveField(23)
-  final String? kelpasangan;
+  final String? rwpasangan;
+
   @HiveField(24)
-  final String? kecpasangan;
+  final String? kelpasangan;
+
   @HiveField(25)
-  final String? provinsipasangan;
+  final String? kecpasangan;
+
   @HiveField(26)
-  final String? kodepospasangan;
+  final String? provinsipasangan;
+
   @HiveField(27)
-  Uint8List? fotoktppasangan;
+  final String? kodepospasangan;
 
   @HiveField(28)
-  bool? isSynced;
+  Uint8List? fotoktppasangan;
 
   @HiveField(29)
-  String statusslik;
+  bool? isSynced;
+
   @HiveField(30)
-  String? dealer;
+  String? statusslik;
+
   @HiveField(31)
-  String? catatan;
+  String? dealer;
 
   @HiveField(32)
-  String? kota;
+  String? catatan;
+
   @HiveField(33)
+  String? kota;
+
+  @HiveField(34)
   String? kotapasangan;
+
+  @HiveField(35)
+  int? is_survey;
 
   OrderModel({
     this.id,
-    required this.cabang,
-    required this.statuspernikahan,
-    // pemohon
-    required this.jeniskelamin,
-    required this.umur,
-    required this.nama,
-    required this.nik,
-    required this.tempatlahir,
-    required this.tgllahir,
-    required this.alamat,
-    required this.rt,
-    required this.rw,
-    required this.kel,
-    required this.kec,
+    this.cabang,
+    this.statusperkawinan,
+    this.jeniskelamin,
+    this.umur,
+    this.nama,
+    this.nik,
+    this.tempatlahir,
+    this.tgllahir,
+    this.alamat,
+    this.rt,
+    this.rw,
+    this.kel,
+    this.kec,
     this.kota,
-    required this.provinsi,
-    required this.kodepos,
+    this.provinsi,
+    this.kodepos,
     this.fotoktp,
-    // pasangan
     this.namapasangan,
     this.nikpasangan,
     this.tempatlahirpasangan,
@@ -114,22 +145,21 @@ class OrderModel extends HiveObject {
     this.provinsipasangan,
     this.kodepospasangan,
     this.fotoktppasangan,
-    // sync
     this.isSynced = false,
-    required this.statusslik,
+    this.statusslik,
     this.dealer,
     this.catatan,
+    this.is_survey,
   });
 
+  // Method toJson yang lebih lengkap
   Map<String, dynamic> toJson() {
     return {
-      'statusslik': statusslik,
+      'id': id,
       'cabang': cabang,
-      'statuspernikahan': statuspernikahan,
-      'jeniskelamin': jeniskelamin,
-      'umur': umur,
-      'nama': nama,
+      'statusperkawinan': statusperkawinan,
       'nik': nik,
+      'nama': nama,
       'tempatlahir': tempatlahir,
       'tgllahir': tgllahir,
       'alamat': alamat,
@@ -139,9 +169,11 @@ class OrderModel extends HiveObject {
       'kec': kec,
       'kota': kota,
       'provinsi': provinsi,
-      'kodepos': kodepos,
-      'namapasangan': namapasangan,
+      'dealer': dealer,
+      'catatan': catatan,
+      'statusslik': statusslik,
       'nikpasangan': nikpasangan,
+      'namapasangan': namapasangan,
       'tempatlahirpasangan': tempatlahirpasangan,
       'tgllahirpasangan': tgllahirpasangan,
       'alamatpasangan': alamatpasangan,
@@ -151,7 +183,10 @@ class OrderModel extends HiveObject {
       'kecpasangan': kecpasangan,
       'kotapasangan': kotapasangan,
       'provinsipasangan': provinsipasangan,
-      'kodepospasangan': kodepospasangan,
+      'umur': umur,
+      'jeniskelamin': jeniskelamin,
+      'is_survey': is_survey,
+      // Foto biasanya di-handle terpisah (misalnya di-upload sebagai multipart/form-data)
     };
   }
 
@@ -160,8 +195,7 @@ class OrderModel extends HiveObject {
       id: json['id'],
       statusslik: json['statusslik'],
       cabang: json['cabang'],
-      statuspernikahan: json['statuspernikahan'],
-      // pemohon
+      statusperkawinan: json['statusperkawinan'],
       jeniskelamin: json['jeniskelamin'],
       umur: json['umur'],
       nama: json['nama'],
@@ -176,7 +210,6 @@ class OrderModel extends HiveObject {
       kota: json['kota'],
       provinsi: json['provinsi'],
       kodepos: json['kodepos'],
-      // pasangan
       namapasangan: json['namapasangan'],
       nikpasangan: json['nikpasangan'],
       tempatlahirpasangan: json['tempatlahirpasangan'],
@@ -189,9 +222,91 @@ class OrderModel extends HiveObject {
       kotapasangan: json['kotapasangan'],
       provinsipasangan: json['provinsipasangan'],
       kodepospasangan: json['kodepospasangan'],
-      //delaer
       dealer: json['dealer'],
       catatan: json['catatan'],
+      is_survey: json['is_survey'],
+    );
+  }
+
+  // Di dalam class OrderModel
+
+// ... (setelah constructor atau fromJson)
+
+  OrderModel copyWith({
+    int? id,
+    String? cabang,
+    String? statusperkawinan,
+    int? jeniskelamin,
+    int? umur,
+    String? nama,
+    String? nik,
+    String? tempatlahir,
+    String? tgllahir,
+    String? alamat,
+    String? rt,
+    String? rw,
+    String? kel,
+    String? kec,
+    String? provinsi,
+    String? kodepos,
+    Uint8List? fotoktp,
+    String? namapasangan,
+    String? nikpasangan,
+    String? tempatlahirpasangan,
+    String? tgllahirpasangan,
+    String? alamatpasangan,
+    String? rtpasangan,
+    String? rwpasangan,
+    String? kelpasangan,
+    String? kecpasangan,
+    String? provinsipasangan,
+    String? kodepospasangan,
+    Uint8List? fotoktppasangan,
+    bool? isSynced, // Parameter yang ingin kita ubah
+    String? statusslik,
+    String? dealer,
+    String? catatan,
+    String? kota,
+    String? kotapasangan,
+    int? is_survey,
+  }) {
+    return OrderModel(
+      id: id ?? this.id,
+      cabang: cabang ?? this.cabang,
+      statusperkawinan: statusperkawinan ?? this.statusperkawinan,
+      jeniskelamin: jeniskelamin ?? this.jeniskelamin,
+      umur: umur ?? this.umur,
+      nama: nama ?? this.nama,
+      nik: nik ?? this.nik,
+      tempatlahir: tempatlahir ?? this.tempatlahir,
+      tgllahir: tgllahir ?? this.tgllahir,
+      alamat: alamat ?? this.alamat,
+      rt: rt ?? this.rt,
+      rw: rw ?? this.rw,
+      kel: kel ?? this.kel,
+      kec: kec ?? this.kec,
+      provinsi: provinsi ?? this.provinsi,
+      kodepos: kodepos ?? this.kodepos,
+      fotoktp: fotoktp ?? this.fotoktp,
+      namapasangan: namapasangan ?? this.namapasangan,
+      nikpasangan: nikpasangan ?? this.nikpasangan,
+      tempatlahirpasangan: tempatlahirpasangan ?? this.tempatlahirpasangan,
+      tgllahirpasangan: tgllahirpasangan ?? this.tgllahirpasangan,
+      alamatpasangan: alamatpasangan ?? this.alamatpasangan,
+      rtpasangan: rtpasangan ?? this.rtpasangan,
+      rwpasangan: rwpasangan ?? this.rwpasangan,
+      kelpasangan: kelpasangan ?? this.kelpasangan,
+      kecpasangan: kecpasangan ?? this.kecpasangan,
+      provinsipasangan: provinsipasangan ?? this.provinsipasangan,
+      kodepospasangan: kodepospasangan ?? this.kodepospasangan,
+      fotoktppasangan: fotoktppasangan ?? this.fotoktppasangan,
+      isSynced: isSynced ?? this.isSynced, // Gunakan nilai baru jika ada
+      statusslik: statusslik ?? this.statusslik,
+      dealer: dealer ?? this.dealer,
+      catatan: catatan ?? this.catatan,
+      kota: kota ?? this.kota,
+      kotapasangan: kotapasangan ?? this.kotapasangan,
+      is_survey: is_survey ?? this.is_survey,
     );
   }
 }
