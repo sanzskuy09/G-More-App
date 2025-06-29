@@ -86,10 +86,7 @@ class ProgressPage extends StatelessWidget {
               itemCount: orders.length,
               itemBuilder: (context, index) {
                 final order = orders[index];
-                // Kode UI Anda untuk menampilkan item...
-                // (Saya salin dari kode Anda)
                 return Padding(
-                  // ... sisanya sama persis
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                   child: Material(

@@ -2,15 +2,14 @@ String? validateField(String key, String label, String? value) {
   if ([
     'nama',
     'umur',
-    'tempat',
     'alamat',
     'kel',
     'kec',
     'kota',
     'provinsi',
     'kodepos',
-    'tampatlahir',
     'tgllahir',
+    'tampatlahir',
     'dealer',
   ].contains(key)) {
     if (value == null || value.trim().isEmpty) {

@@ -15,6 +15,7 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
   OrderBloc(this._orderServices) : super(OrderInitial()) {
     // 3. Gunakan event handler yang lebih spesifik
     on<FetchOrdersFromAPI>(_onFetchOrdersFromAPI);
+    on<CreateOrder>(_onCreateOrder);
   }
 
   Future<void> _onFetchOrdersFromAPI(
@@ -50,6 +51,20 @@ class OrderBloc extends Bloc<OrderEvent, OrderState> {
       emit(OrderError(e.toString()));
     }
   }
+
+  Future<void> _onCreateOrder(
+    CreateOrder event,
+    Emitter<OrderState> emit,
+  ) async {
+    emit(OrderCreateLoading());
+    try {
+      await _orderServices.createOrder(event.order);
+      emit(OrderCreated());
+      // add(FetchOrdersFromAPI());
+    } catch (e) {
+      emit(OrderError(e.toString()));
+    }
+  } // emit();
 }
 
 // class OrderBloc extends Bloc<OrderEvent, OrderState> {

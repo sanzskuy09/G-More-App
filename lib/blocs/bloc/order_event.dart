@@ -12,3 +12,11 @@ final class GetOrder extends OrderEvent {
 }
 
 class FetchOrdersFromAPI extends OrderEvent {}
+
+class CreateOrder extends OrderEvent {
+  final OrderModel order;
+  const CreateOrder(this.order);
+
+  @override
+  List<Object> get props => [order];
+}

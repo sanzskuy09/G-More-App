@@ -13,7 +13,7 @@ class SyncService {
     _connectivity.onConnectivityChanged.listen((result) {
       if (result != ConnectivityResult.none) {
         _onStatusCallback?.call("Terhubung ke internet, mulai sinkronisasi...");
-        syncPendingOrders();
+        // syncPendingOrders();
       } else {
         _onStatusCallback?.call("Tidak ada koneksi internet.");
       }

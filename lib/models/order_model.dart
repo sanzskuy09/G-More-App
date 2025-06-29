@@ -30,7 +30,7 @@ class OrderModel extends HiveObject {
   final String? tempatlahir;
 
   @HiveField(8)
-  final String? tgllahir;
+  final DateTime? tgllahir;
 
   @HiveField(9)
   final String? alamat;
@@ -66,7 +66,7 @@ class OrderModel extends HiveObject {
   final String? tempatlahirpasangan;
 
   @HiveField(20)
-  final String? tgllahirpasangan;
+  final DateTime? tgllahirpasangan;
 
   @HiveField(21)
   final String? alamatpasangan;
@@ -161,7 +161,7 @@ class OrderModel extends HiveObject {
       'nik': nik,
       'nama': nama,
       'tempatlahir': tempatlahir,
-      'tgllahir': tgllahir,
+      'tgllahir': tgllahir?.toIso8601String(),
       'alamat': alamat,
       'rt': rt,
       'rw': rw,
@@ -175,7 +175,7 @@ class OrderModel extends HiveObject {
       'nikpasangan': nikpasangan,
       'namapasangan': namapasangan,
       'tempatlahirpasangan': tempatlahirpasangan,
-      'tgllahirpasangan': tgllahirpasangan,
+      'tgllahirpasangan': tgllahirpasangan?.toIso8601String(),
       'alamatpasangan': alamatpasangan,
       'rtpasangan': rtpasangan,
       'rwpasangan': rwpasangan,
@@ -201,7 +201,8 @@ class OrderModel extends HiveObject {
       nama: json['nama'],
       nik: json['nik'],
       tempatlahir: json['tempatlahir'],
-      tgllahir: json['tgllahir'],
+      tgllahir:
+          json['tgllahir'] == null ? null : DateTime.parse(json['tgllahir']),
       alamat: json['alamat'],
       rt: json['rt'],
       rw: json['rw'],
@@ -213,7 +214,9 @@ class OrderModel extends HiveObject {
       namapasangan: json['namapasangan'],
       nikpasangan: json['nikpasangan'],
       tempatlahirpasangan: json['tempatlahirpasangan'],
-      tgllahirpasangan: json['tgllahirpasangan'],
+      tgllahirpasangan: json['tgllahirpasangan'] == null
+          ? null
+          : DateTime.parse(json['tgllahirpasangan']),
       alamatpasangan: json['alamatpasangan'],
       rtpasangan: json['rtpasangan'],
       rwpasangan: json['rwpasangan'],
@@ -241,7 +244,7 @@ class OrderModel extends HiveObject {
     String? nama,
     String? nik,
     String? tempatlahir,
-    String? tgllahir,
+    DateTime? tgllahir,
     String? alamat,
     String? rt,
     String? rw,
@@ -253,7 +256,7 @@ class OrderModel extends HiveObject {
     String? namapasangan,
     String? nikpasangan,
     String? tempatlahirpasangan,
-    String? tgllahirpasangan,
+    DateTime? tgllahirpasangan,
     String? alamatpasangan,
     String? rtpasangan,
     String? rwpasangan,
